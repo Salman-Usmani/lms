@@ -14,8 +14,9 @@ import FileViewer from 'react-native-file-viewer';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import {check, PERMISSIONS, request} from 'react-native-permissions';
 import Pdf from 'react-native-pdf';
-import {VLCPlayer, VlCPlayerView} from 'react-native-vlc-media-player';
+// import {VLCPlayer, VlCPlayerView} from 'react-native-vlc-media-player';
 import Orientation from 'react-native-orientation';
+import VideoPlayer from 'react-native-video-controls';
 
 // import VideoPlayer from 'react-native-video-player';
 // import Video from 'react-native-video';
@@ -143,17 +144,27 @@ const App: React.FC = () => {
       )}
 
       {showVideo && (
-        <VlCPlayerView
-          autoplay={false}
-          url="https://www.radiantmediaplayer.com/media/big-buck-bunny-360p.mp4"
-          Orientation={Orientation}
-          ggUrl=""
-          showGG={true}
-          showTitle={true}
-          title="Big Buck Bunny"
-          showBack={true}
-          onLeftPress={() => {}}
+        // video control
+        <VideoPlayer
+          source={{
+            uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          }}
+          // navigator={this.props.navigator}
         />
+
+        // vlc Player
+        // <VlCPlayerView
+        //   autoplay={false}
+        //   url="https://www.radiantmediaplayer.com/media/big-buck-bunny-360p.mp4"
+        //   Orientation={Orientation}
+        //   ggUrl=""
+        //   showGG={true}
+        //   showTitle={true}
+        //   title="Big Buck Bunny"
+        //   showBack={true}
+        //   onLeftPress={() => {}}
+        // />
+
         // <VideoPlayer
         //   video={{
         //     uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
@@ -164,8 +175,8 @@ const App: React.FC = () => {
         //   fullscreen
         //   fullscreenAutorotate
         //   fullScreenOnLongPress
-
         // />
+
         // <VideoPlayer
         //   autoStart={true}
         //   mainControl={args => <DefaultMainControl {...args} />}
