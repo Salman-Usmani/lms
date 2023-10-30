@@ -8,7 +8,4 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
-keep class com.brentvatne.react.ReactVideoViewManager { *; }
-keep class com.brentvatne.react.ReactVideoView { *; }
-keep class com.brentvatne.react.ReactVideoView$* { *; }
 
