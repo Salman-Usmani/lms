@@ -1,7 +1,7 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import React, {useState} from 'react';
-import {COLORS, ICONS} from '../../../../themes';
+import {COLORS, FONTS, ICONS} from '../../../../themes';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {Resources} from './resources';
 
@@ -24,7 +24,7 @@ const Item = ({
   selectedItem: string;
 }) => {
   return (
-    <View key={item._id} style={styles.dayContainer}>
+    <View style={styles.dayContainer}>
       <TouchableOpacity onPress={onPress} style={styles.dayButtonStyle}>
         <View style={styles.titleView}>
           <ICONS.MaterialIcons
@@ -83,7 +83,7 @@ export const Days = ({days}: {days: IDays[]}) => {
     <FlatList
       data={days}
       renderItem={renderItem}
-      nestedScrollEnabled
+      keyExtractor={Item => Item._id}
       ItemSeparatorComponent={Separator}
     />
   );
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     gap: widthInDp(5),
     flex: 1,
   },
-  title: {color: COLORS.black, flex: 1},
+  title: {color: COLORS.black, flex: 1, fontFamily: FONTS.Inter},
   separator: {
     height: 1, // Adjust the height of the separator as needed
     backgroundColor: COLORS.lightGray, // Separator color

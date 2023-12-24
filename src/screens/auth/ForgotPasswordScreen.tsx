@@ -1,3 +1,5 @@
+import React, {useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -5,19 +7,17 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
-import {heightInDp, widthInDp} from '../../utils';
-import {AuthStackNavigationProp} from '../../types';
-import {Controller, useForm} from 'react-hook-form';
-import {EMAIL_REGEX} from '../../constants';
-import {COLORS} from '../../themes';
-import {dataServer} from '../../services/axiosConfig';
 import Toast from 'react-native-toast-message';
 import {
   Button,
-  LogoDesign,
   FloatingTitleTextInputField,
+  LogoDesign,
 } from '../../components';
+import {EMAIL_REGEX} from '../../constants';
+import {dataServer} from '../../services/axiosConfig';
+import {COLORS, FONTS} from '../../themes';
+import {AuthStackNavigationProp} from '../../types';
+import {heightInDp, widthInDp} from '../../utils';
 
 type TforgotPasswordForm = {
   email: string;
@@ -50,7 +50,11 @@ const ForgotPasswordScreen = ({
       setLoading(false);
       Toast.show({
         type: 'error',
-        text1: error?.response?.data?.errors[0] || 'Login Failed',
+        text1: Array.isArray(error?.response?.data?.errors)
+          ? error?.response?.data?.errors[0]
+          : error?.response?.data.message
+            ? error?.response?.data.message
+            : error.response?.data || 'failed to verify email',
       });
     }
   }
@@ -59,7 +63,7 @@ const ForgotPasswordScreen = ({
       style={styles.mainContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <LogoDesign />
-      <View style={{flex: 1, justifyContent: 'center'}}>
+      <View style={styles.innerContainer}>
         <Text style={styles.title}>Forgot Password</Text>
         <Text style={styles.noAccountStyle}>
           Don't have an account ?{' '}
@@ -107,29 +111,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: widthInDp(5),
     backgroundColor: COLORS.white,
   },
-  logoStyle: {
-    alignSelf: 'center',
-    marginVertical: heightInDp(2.5),
-  },
+  innerContainer: {flex: 1, justifyContent: 'center'},
+
   title: {
     fontSize: heightInDp(5),
+    fontFamily: FONTS.Inter,
   },
   noAccountStyle: {
     color: COLORS.darkGray,
+    fontFamily: FONTS.Inter,
   },
   register: {
     color: COLORS.primary,
   },
   inputContainer: {
-    // width: widthInDp(90),
     width: '100%',
     alignSelf: 'center',
     marginVertical: heightInDp(2.5),
     rowGap: heightInDp(2.5),
-  },
-  forgetPassView: {marginVertical: heightInDp(2.5)},
-  forgetPass: {
-    color: COLORS.primary,
-    fontSize: widthInDp(5),
   },
 });

@@ -1,4 +1,12 @@
 export const COLORS = {
+  textPrimary: '#3B3551',
+  textHighlight: '#734CC9',
+  textSecondary: '#6F7F95',
+  textSubHeading: '#333',
+  numColor: '#123472',
+  imageBorder: '#C3D6F8',
+  iconColor: 'rgba(0, 0, 0, 0.54)',
+  linkColor: '#007aff',
   primary: '#1C3D6A',
   secondary: '#F6E05F',
   error: '#FF4D49',

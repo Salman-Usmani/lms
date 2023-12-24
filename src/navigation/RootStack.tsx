@@ -1,29 +1,35 @@
-import {createStackNavigator} from '@react-navigation/stack';
-import React, {useState} from 'react';
-import {AccountScreen, CohortScreen, MediaScreen} from '../screens';
-import {CohortStackScreensList, RootStackScreensList} from '../types';
-import {COLORS, ICONS} from '../themes';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import CustomDrawerContent from './CustomDrawer';
-import {widthInDp} from '../utils';
-import {SvgXml} from 'react-native-svg';
-import {signal, userIcon} from '../assets';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
-import {useUserContext} from '../context/UserContext';
-import {MenuContainer} from '../components';
-import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {CommonActions} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import React from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {SvgXml} from 'react-native-svg';
+import {signal} from '../assets';
+import {MenuContainer} from '../components';
+import {useUserContext} from '../context/UserContext';
+import {
+  AccountScreen,
+  CohortScreen,
+  GroupDetailsScreen,
+  GroupScreen,
+  MediaScreen,
+} from '../screens';
+import {COLORS, ICONS} from '../themes';
+import {CohortStackScreensList, RootStackScreensList} from '../types';
+import {widthInDp} from '../utils';
+import CustomDrawerContent from './CustomDrawer';
+import {CohortStack} from './DrawerScreensStack/CohortStack';
+import {GroupStack} from './DrawerScreensStack/GroupStack';
 
-const Stack = createStackNavigator<CohortStackScreensList>();
 const Drawer = createDrawerNavigator<RootStackScreensList>();
 
 const RootStack = () => {
   const {user} = useUserContext();
-  const [visible, setVisible] = useState(false);
 
   return (
     <Drawer.Navigator
-      initialRouteName="Dashboard"
+      initialRouteName={__DEV__ ? 'Group' : 'Dashboard'}
       screenOptions={({navigation}) => ({
         // Add a placeholder button without the `onPress` to avoid flicker
         swipeEnabled: false,
@@ -60,23 +66,7 @@ const RootStack = () => {
                 color={COLORS.white}
               />
             </View>
-            {/* <TouchableOpacity onPress={()=> {}} style={styles.icon}>
-              {user?.avatar ? (
-                <Image
-                  source={{uri: user.avatar}}
-                  resizeMode="contain"
-                  height={widthInDp(10)}
-                  width={widthInDp(10)}
-                  style={styles.image}
-                />
-              ) : (
-                <ICONS.FontAwesome6
-                  name="circle-user"
-                  size={widthInDp(5)}
-                  color={COLORS.white}
-                />
-              )}
-            </TouchableOpacity> */}
+
             <View>
               <MenuContainer
                 uri={user?.avatar || ''}
@@ -110,43 +100,33 @@ const RootStack = () => {
         component={AccountScreen}
         options={{
           drawerLabel: 'Account',
-          drawerIcon: () => <SvgXml xml={userIcon} />,
+          drawerIcon: () => (
+            <ICONS.FontAwesome6
+              name="user-large"
+              size={widthInDp(5)}
+              color={COLORS.primary}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Group"
+        component={GroupStack}
+        options={{
+          drawerLabel: 'Group',
+          drawerIcon: () => (
+            <ICONS.FontAwesome6
+              name="user-group"
+              size={widthInDp(5)}
+              color={COLORS.primary}
+            />
+          ),
         }}
       />
     </Drawer.Navigator>
   );
 };
 export default RootStack;
-
-const CohortStack = () => {
-  return (
-    <Stack.Navigator
-      initialRouteName={'Cohort'}
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: COLORS.primary,
-        },
-        headerTitleStyle: {
-          //   fontFamily: roboto,
-        },
-        headerTitleAlign: 'center',
-        headerTintColor: COLORS.white,
-        headerBackTitleVisible: false,
-      }}>
-      <Stack.Screen
-        name="Cohort"
-        component={CohortScreen}
-        options={{headerShown: false}}
-      />
-
-      <Stack.Screen
-        name="Media"
-        component={MediaScreen}
-        options={{headerShown: false}}
-      />
-    </Stack.Navigator>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {

@@ -8,7 +8,7 @@ import {
   Text,
 } from 'react-native';
 import {heightInDp, widthInDp} from '../../utils';
-import {COLORS} from '../../themes';
+import {COLORS, FONTS} from '../../themes';
 import {TextInput} from 'react-native-paper';
 
 interface IfloatInput {
@@ -85,17 +85,24 @@ export const FloatingTitleTextInputField = ({
             secondary: COLORS.secondary,
           },
         }}
+        activeOutlineColor={COLORS.primary}
         style={{
           backgroundColor: COLORS.white,
           borderWidth: 0.5,
-          // borderColor: errorMsg ? COLORS.error : COLORS.primary,
+          fontFamily: FONTS.Inter,
+          borderColor: errorMsg ? COLORS.error : undefined,
           borderRadius: widthInDp(2),
           borderTopLeftRadius: widthInDp(2),
           borderTopRightRadius: widthInDp(2),
         }}
       />
       {errorMsg && (
-        <Text style={{color: COLORS.error, marginHorizontal: widthInDp(3)}}>
+        <Text
+          style={{
+            color: COLORS.error,
+            marginHorizontal: widthInDp(3),
+            fontFamily: FONTS.Inter,
+          }}>
           {errorMsg}
         </Text>
       )}

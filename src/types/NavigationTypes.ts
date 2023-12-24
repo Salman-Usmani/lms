@@ -1,4 +1,5 @@
 import {StackScreenProps} from '@react-navigation/stack';
+import {IGroups} from './Interface';
 // import {NavigatorScreenParams} from '@react-navigation/native';
 
 export type AuthStackScreensList = {
@@ -9,8 +10,6 @@ export type AuthStackScreensList = {
   VerifyOtp: {email: string};
   ResetPassword: {email: string};
   Root: undefined;
-
-  // Base: NavigatorScreenParams<BaseStackScreensList>;
 };
 export type AuthStackNavigationProp<T extends keyof AuthStackScreensList> =
   StackScreenProps<AuthStackScreensList, T>;
@@ -18,6 +17,7 @@ export type AuthStackNavigationProp<T extends keyof AuthStackScreensList> =
 export type RootStackScreensList = {
   Dashboard: undefined;
   Account: undefined;
+  Group: undefined;
 };
 export type RootStackNavigationProp<T extends keyof RootStackScreensList> =
   StackScreenProps<RootStackScreensList, T>;
@@ -33,10 +33,13 @@ export type CohortStackNavigagtionProps<
   T extends keyof CohortStackScreensList,
 > = StackScreenProps<CohortStackScreensList, T>;
 
-export type BaseStackScreensList = {
-  Splash: undefined;
-  Auth: undefined;
-  Root: undefined;
+export type GroupStackScreensList = {
+  GroupScreen: undefined;
+  GroupDetailsScreen: IGroups;
+  Media: {
+    fileType: 'pdf' | 'ppt' | 'video';
+    url: string;
+  };
 };
-export type BaseStackNavigationProp<T extends keyof BaseStackScreensList> =
-  StackScreenProps<BaseStackScreensList, T>;
+export type GroupStackNavigagtionProps<T extends keyof GroupStackScreensList> =
+  StackScreenProps<GroupStackScreensList, T>;

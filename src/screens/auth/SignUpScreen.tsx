@@ -59,7 +59,11 @@ const SignUpScreen = ({navigation}: AuthStackNavigationProp<'SignUp'>) => {
       setLoading(false);
       Toast.show({
         type: 'error',
-        text1: error?.response?.data?.errors[0] || 'Registration Failed',
+        text1: Array.isArray(error?.response?.data?.errors)
+          ? error?.response?.data?.errors[0]
+          : error?.response?.data.message
+            ? error?.response?.data.message
+            : error.response?.data || 'failed to register user',
       });
     }
   }
@@ -191,7 +195,8 @@ const SignUpScreen = ({navigation}: AuthStackNavigationProp<'SignUp'>) => {
                 onFillColor={COLORS.primary}
                 onTintColor={COLORS.black}
               />
-              <Text style={{textAlignVertical: 'center'}}>
+              <Text
+                style={{textAlignVertical: 'center', fontFamily: FONTS.Inter}}>
                 I accept the terms and conditions
               </Text>
             </View>
@@ -213,9 +218,11 @@ export default SignUpScreen;
 const styles = StyleSheet.create({
   title: {
     fontSize: heightInDp(5),
+    fontFamily: FONTS.Inter,
   },
   noAccountStyle: {
     color: COLORS.darkGray,
+    fontFamily: FONTS.Inter,
   },
   register: {
     color: COLORS.primary,

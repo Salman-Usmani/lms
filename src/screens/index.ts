@@ -7,5 +7,11 @@ export {
   VerifyOtpScreen,
   ResetPasswordScreen,
 } from './auth';
-export {CohortScreen, AccountScreen, MediaScreen} from './user';
+export {
+  CohortScreen,
+  AccountScreen,
+  MediaScreen,
+  GroupScreen,
+  GroupDetailsScreen,
+} from './user';
 export {SplashScreen};

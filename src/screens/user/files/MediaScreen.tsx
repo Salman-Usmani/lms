@@ -9,6 +9,7 @@ const MediaScreen = ({
   navigation,
   route,
 }: CohortStackNavigagtionProps<'Media'>) => {
+  console.log('kfhgfhgv', route.params);
   const {fileType, url} = route.params;
   return (
     <View style={{flex: 1}}>
@@ -28,7 +29,7 @@ const MediaScreen = ({
               console.log(`Current page: ${page}`);
             }}
             onError={error => {
-              console.log(error);
+              console.log('error', error);
             }}
             onPressLink={uri => {
               console.log(`Link pressed: ${uri}`);

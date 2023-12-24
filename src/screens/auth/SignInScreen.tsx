@@ -15,7 +15,7 @@ import {
   FloatingTitleTextInputField,
 } from '../../components';
 import {heightInDp, widthInDp} from '../../utils';
-import {COLORS, ICONS} from '../../themes';
+import {COLORS, FONTS, ICONS} from '../../themes';
 import {AuthStackNavigationProp} from '../../types';
 import {dataServer} from '../../services/axiosConfig';
 import {CommonActions} from '@react-navigation/native';
@@ -40,12 +40,8 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
   } = useForm<TLoginForm>();
 
   // useEffect(() => {
-  //   try {
-  //     setValue('email', 'iamosmanraza@gmail.com');
-  //     setValue('password', 'Usman@12345');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
+  //   setValue('email', 'iamosmanraza@gmail.com');
+  //   setValue('password', 'Usman@12345');
   // }, []);
   async function handleSignIn(data: TLoginForm) {
     try {
@@ -53,7 +49,6 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
       const loginApi = await dataServer.post('auth/login', data);
       setLoading(false);
       if (loginApi.status === 200) {
-        console.log(loginApi.data.data);
         await AsyncStorage.setItem(
           'accessToken',
           JSON.stringify(loginApi.data.data.accessToken),
@@ -78,7 +73,11 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
       setLoading(false);
       Toast.show({
         type: 'error',
-        text1: error?.response?.data?.errors[0] || 'Login Failed',
+        text1: Array.isArray(error?.response?.data?.errors)
+          ? error?.response?.data?.errors[0]
+          : error?.response?.data.message
+            ? error?.response?.data.message
+            : error.response?.data || 'failed to login user',
       });
     }
   }
@@ -166,9 +165,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: heightInDp(5),
+    fontFamily: FONTS.Inter,
   },
   noAccountStyle: {
     color: COLORS.darkGray,
+    fontFamily: FONTS.Inter,
   },
   register: {
     color: COLORS.primary,
@@ -183,5 +184,6 @@ const styles = StyleSheet.create({
   forgetPass: {
     color: COLORS.primary,
     fontSize: widthInDp(5),
+    fontFamily: FONTS.Inter,
   },
 });

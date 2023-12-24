@@ -1,8 +1,5 @@
 import React from 'react';
-
-import {Text, TouchableOpacity, View, Modal, StyleSheet} from 'react-native';
-import {COLORS, ICONS} from '../../themes';
-import {heightInDp, widthInDp} from '../../utils';
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   CameraOptions,
   ImageLibraryOptions,
@@ -10,6 +7,8 @@ import {
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import {COLORS, FONTS, ICONS} from '../../themes';
+import {heightInDp, widthInDp} from '../../utils';
 
 type IImagePicker = {
   showModal: boolean;
@@ -80,73 +79,33 @@ export const ImagePicker = (props: IImagePicker) => {
         setShowModal(false);
       }}>
       <View style={styles.mainContainer}>
-        <View
-          style={{
-            backgroundColor: COLORS.white,
-            elevation: 5,
-            width: widthInDp(80),
-            height: widthInDp(40),
-            alignSelf: 'center',
-            borderRadius: 10,
-            marginVertical: widthInDp(50),
-          }}>
+        <View style={styles.innerContainer}>
           <TouchableOpacity
             onPress={() => setShowModal(false)}
-            style={{
-              alignSelf: 'flex-end',
-              borderRadius: widthInDp(5),
-              overflow: 'hidden',
-              position: 'absolute',
-              backgroundColor: COLORS.error,
-              padding: 1,
-              right: -widthInDp(3),
-              top: -widthInDp(3),
-            }}>
+            style={styles.closeBtnStyle}>
             <ICONS.AntDesign
               name="closecircle"
               size={widthInDp(7)}
               color={COLORS.white}
             />
           </TouchableOpacity>
-          <View
-            style={{
-              borderBottomWidth: 1,
-
-              justifyContent: 'center',
-              flex: 1.5,
-            }}>
-            <Text style={[styles.txt1, {}]}>Choose a picture</Text>
+          <View style={styles.textStyle}>
+            <Text style={styles.txt1}>Choose a picture</Text>
           </View>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'space-around',
-              flexDirection: 'row',
-              alignItems: 'center',
-              // paddin,
-            }}>
-            <View style={{flex: 1}}>
-              <TouchableOpacity
-                onPress={() => pickImage('cAMERA')}
-                // onPress={() => {}}
-                style={styles.btnView}>
-                <Text style={styles.txt1}>Camera</Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                borderLeftWidth: 1,
-                height: '100%',
-              }}
-            />
-            <View style={{flex: 1}}>
-              <TouchableOpacity
-                onPress={() => pickImage('GALLERY')}
-                // onPress={() => {}}
-                style={styles.btnView}>
-                <Text style={styles.txt1}>Gallery</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.btnContainer}>
+            <TouchableOpacity
+              onPress={() => pickImage('cAMERA')}
+              style={styles.btnView}>
+              <Text style={styles.txt1}>Camera</Text>
+            </TouchableOpacity>
+
+            <View style={styles.separator} />
+
+            <TouchableOpacity
+              onPress={() => pickImage('GALLERY')}
+              style={styles.btnView}>
+              <Text style={styles.txt1}>Gallery</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -160,24 +119,48 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  container: {
-    alignSelf: 'center',
-    width: widthInDp(90),
-    height: heightInDp(70),
+  innerContainer: {
     backgroundColor: COLORS.white,
-    borderRadius: widthInDp(2),
-    padding: widthInDp(5),
-    position: 'absolute',
-    top: heightInDp(15),
+    elevation: 5,
+    width: widthInDp(80),
+    height: widthInDp(40),
+    alignSelf: 'center',
+    borderRadius: 10,
+    marginVertical: widthInDp(50),
   },
-  btnContainer: {marginVertical: heightInDp(1), flexDirection: 'row'},
-  dividerLine: {height: heightInDp(0.1), backgroundColor: 'lightgrey'},
+  closeBtnStyle: {
+    alignSelf: 'flex-end',
+    borderRadius: widthInDp(5),
+    overflow: 'hidden',
+    position: 'absolute',
+    backgroundColor: COLORS.error,
+    padding: 1,
+    right: -widthInDp(3),
+    top: -widthInDp(3),
+  },
+  textStyle: {
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    flex: 1.5,
+  },
+  separator: {
+    borderLeftWidth: 1,
+    height: '100%',
+  },
+
+  btnContainer: {
+    flex: 1,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   txt1: {
     fontSize: widthInDp(5),
     // textTransform: 'uppercase',
     color: COLORS.primary,
     textAlign: 'center',
     textAlignVertical: 'center',
+    fontFamily: FONTS.Inter,
   },
   btnView: {
     flex: 1,

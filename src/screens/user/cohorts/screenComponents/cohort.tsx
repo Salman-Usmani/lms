@@ -1,7 +1,7 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import React, {useState} from 'react';
-import {COLORS, ICONS} from '../../../../themes';
+import {COLORS, FONTS, ICONS} from '../../../../themes';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {Modules} from './modules';
 
@@ -46,7 +46,7 @@ const Item = ({
   selectedItem: string;
 }) => {
   return (
-    <View key={item._id} style={styles.cohortsContainer}>
+    <View style={styles.cohortsContainer}>
       <TouchableOpacity onPress={onPress} style={styles.cohortButtonStyle}>
         <View style={styles.titleView}>
           <ICONS.FontAwesome6
@@ -97,7 +97,11 @@ export const Cohorts = ({cohorts}: {cohorts: ICohorts[] | []}) => {
   };
 
   return (
-    <FlatList data={cohorts} renderItem={renderItem} nestedScrollEnabled />
+    <FlatList
+      data={cohorts}
+      renderItem={renderItem}
+      keyExtractor={Item => Item._id}
+    />
   );
 };
 
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: widthInDp(2),
     marginVertical: heightInDp(0.5),
-    marginHorizontal: widthInDp(2),
+    marginHorizontal: widthInDp(3),
     overflow: 'hidden',
     rowGap: heightInDp(0.5),
   },
@@ -119,5 +123,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   titleView: {flexDirection: 'row', columnGap: widthInDp(5)},
-  title: {color: COLORS.white},
+  title: {color: COLORS.white, fontFamily: FONTS.Inter},
 });

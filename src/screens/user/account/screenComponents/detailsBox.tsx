@@ -54,7 +54,6 @@ export const DetailsBox = (props: IProps) => {
       const userUpdateApi = await dataServer.put('user', data);
       setLoading(false);
       if (userUpdateApi.status === 200) {
-        console.log('userUpdateApi', userUpdateApi.data);
         props.setUpdatedUser(userUpdateApi.data.data.user);
         await AsyncStorage.setItem(
           'userData',
@@ -66,15 +65,14 @@ export const DetailsBox = (props: IProps) => {
         });
       }
     } catch (error: any) {
-      console.log(error.response.data);
       setLoading(false);
       Toast.show({
         type: 'error',
         text1: Array.isArray(error?.response?.data?.errors)
           ? error?.response?.data?.errors[0]
           : error?.response?.data?.message
-          ? error?.response?.data?.message
-          : error.response.data || 'Login Failed',
+            ? error?.response?.data?.message
+            : error.response.data || 'Login to update user',
       });
     }
   }

@@ -59,3 +59,115 @@ export interface UserData {
   role: string;
   state: string;
 }
+export interface IComments {
+  _id: string;
+  content: string;
+  post: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    phoneNo: string;
+    role: string;
+    avatar?: string;
+  } | null;
+
+  createdAt: string;
+  updatedAt: string;
+}
+export interface ILikes {
+  _id: string;
+  name: string;
+  email: string;
+  phoneNo: string;
+  role: string;
+  country: string;
+  state: string;
+  avatar: string;
+}
+
+export interface IGroupPost {
+  url: any;
+  _id: string;
+  title: string;
+  content: string;
+  group: string;
+  postCreator: {
+    _id: string;
+    name: string;
+    email: string;
+    phoneNo: string;
+    role: string;
+    country: string;
+    state: string;
+    avatar?: string;
+  };
+  isGroupAdminApproved: boolean;
+  comments: [IComments];
+  likes: [ILikes];
+  media: {
+    _id: string;
+    fileKey: string;
+    encoding: string;
+    originalName?: string;
+    mimetype: string;
+    s3PrivateUrl: string;
+    s3PublicUrl: string;
+    size: string;
+    bucketName: string;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+  createdAt: Date;
+  updatedAt: string;
+}
+export interface IGroupMember {
+  member: {
+    _id: string;
+    name: string;
+    email: string;
+    phoneNo: string;
+    role: string;
+    country: string;
+    state: string;
+    avatar: string;
+  };
+  canPost: boolean;
+  canComment: boolean;
+  createdAt: string;
+  _id: string;
+}
+
+export interface IGroups {
+  moderatorSettings: {
+    moderator: {
+      _id: string;
+      name: string;
+      email: string;
+      phoneNo: string;
+      role: string;
+    };
+    canModifyClients: boolean;
+    canDeletePost: boolean;
+    canCreatePost: boolean;
+  };
+  _id: string;
+  name: string;
+  avatar: string;
+  description: string;
+  isModerated: boolean;
+  groupOwners: {
+    _id: string;
+    name: string;
+    email: string;
+    phoneNo: string;
+    role: string;
+    avatar: string;
+    country: string;
+    state: string;
+  };
+  groupMembers: [IGroupMember];
+  // groupPosts: [IGroupPost];
+  createdAt: Date;
+  updatedAt: string;
+}

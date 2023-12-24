@@ -9,7 +9,7 @@ import React, {useEffect, useState} from 'react';
 import {heightInDp, widthInDp} from '../../utils';
 import {AuthStackNavigationProp} from '../../types';
 import {Controller, useForm} from 'react-hook-form';
-import {COLORS} from '../../themes';
+import {COLORS, FONTS} from '../../themes';
 import {dataServer} from '../../services/axiosConfig';
 import Toast from 'react-native-toast-message';
 import {
@@ -36,7 +36,6 @@ const VerifyOtpScreen = ({
   const [isLoading, setLoading] = useState(false);
 
   async function handleForgotPassword(data: TforgotPasswordForm) {
-    console.log(data);
     try {
       setLoading(true);
       const verifyOtpApi = await dataServer.post('user/verify-otp', data);
@@ -58,9 +57,12 @@ const VerifyOtpScreen = ({
       setLoading(false);
       Toast.show({
         type: 'error',
-        text1: error?.response?.data?.errors[0] || 'Login Failed',
+        text1: Array.isArray(error?.response?.data?.errors)
+          ? error?.response?.data?.errors[0]
+          : error?.response?.data.message
+            ? error?.response?.data.message
+            : error.response?.data || 'failed to verify otp',
       });
-      console.log('error on signin', error);
     }
   }
 
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: heightInDp(5),
+    fontFamily: FONTS.Inter,
   },
   noAccountStyle: {
     color: COLORS.darkGray,

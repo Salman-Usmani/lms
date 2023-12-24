@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import {ICountryCode, ICountrySelect} from '../../types';
-import {COLORS} from '../../themes';
+import {COLORS, FONTS} from '../../themes';
 import {heightInDp, widthInDp} from '../../utils';
 import {FloatingTitleTextInputField} from '../atoms/FloatingInput';
 
@@ -62,7 +62,7 @@ export const CountrySelect = (props: ICountrySelect) => {
               <TouchableOpacity
                 style={styles.btnContainer}
                 onPress={() => itemSelect(item)}>
-                <Text style={{color: COLORS.black}}>
+                <Text style={styles.btnText}>
                   {item.flag + ' ' + item.name}
                 </Text>
               </TouchableOpacity>
@@ -91,5 +91,6 @@ const styles = StyleSheet.create({
     top: heightInDp(15),
   },
   btnContainer: {marginVertical: heightInDp(1), flexDirection: 'row'},
+  btnText: {color: COLORS.black, fontFamily: FONTS.Inter},
   dividerLine: {height: heightInDp(0.1), backgroundColor: 'lightgrey'},
 });

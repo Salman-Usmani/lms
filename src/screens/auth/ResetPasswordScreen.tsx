@@ -59,9 +59,14 @@ const ResetPasswordScreen = ({
       }
     } catch (error: any) {
       setLoading(false);
+
       Toast.show({
         type: 'error',
-        text1: error?.response?.data?.errors[0] || 'Registration Failed',
+        text1: Array.isArray(error?.response?.data?.errors)
+          ? error?.response?.data?.errors[0]
+          : error?.response?.data.message
+            ? error?.response?.data.message
+            : error.response?.data || 'failed to reset password',
       });
     }
   }
@@ -146,6 +151,7 @@ export default ResetPasswordScreen;
 const styles = StyleSheet.create({
   title: {
     fontSize: heightInDp(5),
+    fontFamily: FONTS.Inter,
   },
   noAccountStyle: {
     color: COLORS.darkGray,

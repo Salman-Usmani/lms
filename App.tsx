@@ -40,7 +40,6 @@ const App: React.FC = () => {
   //   const status = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
 
   //   if (status === 'granted') {
-  //     console.log('Storage');
   //     // Permission already granted, proceed with the download
   //     downloadFileWithRetry(
   //       'https://www.sampledocs.in/DownloadFiles/SampleFile?filename=SampleDocs-samplepptx&ext=pptx',
@@ -53,14 +52,12 @@ const App: React.FC = () => {
 
   //     if (result === 'granted') {
   //       // Permission granted, proceed with the download
-  //       console.log('Storage permission');
   //       downloadFileWithRetry(
   //         'https://www.sampledocs.in/DownloadFiles/SampleFile?filename=SampleDocs-samplepptx&ext=pptx',
   //       );
   //       // 'https://freetestdata.com/wp-content/uploads/2022/11/Free_Test_Data_10.5MB_PDF.pdf',
   //     } else {
   //       // Permission denied, handle accordingly (e.g., show an error message)
-  //       console.log('Storage permission denied');
   //     }
   //   }
   // };
@@ -92,7 +89,6 @@ const App: React.FC = () => {
   //     })
   //       .fetch('GET', fileUrl)
   //       .progress((received, total) => {
-  //         // console.log('progress', received / total);
   //         setProgress(Number(received) / Number(total));
   //       });
   //     setLoading(false);
@@ -103,7 +99,6 @@ const App: React.FC = () => {
   //   } catch (error) {
   //     setLoading(false);
   //     Alert.alert('something went wrong', String(error));
-  //     console.log('something went wrong', error);
   //   }
   // }
   return (
@@ -147,30 +142,6 @@ const App: React.FC = () => {
 
   //     )}
 
-  //     {showPDF && (
-  //       <View style={styles.container}>
-  //         <Pdf
-  //           source={{
-  //             uri: 'https://freetestdata.com/wp-content/uploads/2022/11/Free_Test_Data_10.5MB_PDF.pdf',
-  //           }}
-  //           trustAllCerts={false}
-  //           onLoadProgress={(percent: number) => console.log(percent)}
-  //           onLoadComplete={(numberOfPages, filePath) => {
-  //             console.log(`Number of pages: ${numberOfPages}`);
-  //           }}
-  //           onPageChanged={(page, numberOfPages) => {
-  //             console.log(`Current page: ${page}`);
-  //           }}
-  //           onError={error => {
-  //             console.log(error);
-  //           }}
-  //           onPressLink={uri => {
-  //             console.log(`Link pressed: ${uri}`);
-  //           }}
-  //           style={styles.pdf}
-  //         />
-  //       </View>
-  //     )}
   //   </View>
   // ) : (
   //   <Modal animationType="fade" visible={isLoading}>

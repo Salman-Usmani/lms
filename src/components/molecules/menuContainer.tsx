@@ -1,6 +1,6 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React, {useState} from 'react';
-import {Button, Menu, Divider, PaperProvider} from 'react-native-paper';
+import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Divider, Menu, PaperProvider} from 'react-native-paper';
 import {COLORS, ICONS} from '../../themes';
 import {heightInDp, widthInDp} from '../../utils';
 
@@ -36,7 +36,6 @@ export const MenuContainer = ({
             {uri ? (
               <Image
                 source={{uri}}
-                resizeMode="contain"
                 height={widthInDp(10)}
                 width={widthInDp(10)}
                 style={styles.image}
@@ -78,8 +77,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    // width: widthInDp(10),
-    // height: widthInDp(10),
   },
   image: {flex: 1, borderRadius: widthInDp(10)},
 });

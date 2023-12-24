@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
   },
   textLogo: {
     marginTop: heightInDp(3),
-    fontFamily: FONTS.OpenSan,
     fontSize: widthInDp(5),
     textAlign: 'center',
     color: COLORS.primary,
+    fontFamily: FONTS.Inter,
   },
 });

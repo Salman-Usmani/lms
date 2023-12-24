@@ -84,7 +84,6 @@ const CohortScreen = ({navigation}: CohortStackNavigagtionProps<'Cohort'>) => {
       setLoading(true);
       const fetchUserContentApi = await dataServer.get('user/content');
       if (fetchUserContentApi.status === 200) {
-        console.log(fetchUserContentApi.data);
         setCohorts(fetchUserContentApi.data.data.cohorts);
         setLoading(false);
         Toast.show({
@@ -93,13 +92,14 @@ const CohortScreen = ({navigation}: CohortStackNavigagtionProps<'Cohort'>) => {
         });
       }
     } catch (error: any) {
-      console.log('error on cohort screen', error.response.data);
       setLoading(false);
       Toast.show({
         type: 'error',
         text1: Array.isArray(error?.response?.data?.errors)
           ? error?.response?.data?.errors[0]
-          : error.response.data || 'Login Failed',
+          : error?.response?.data.message
+            ? error?.response?.data.message
+            : error.response?.data || 'failed to get cohorts',
       });
     }
   }

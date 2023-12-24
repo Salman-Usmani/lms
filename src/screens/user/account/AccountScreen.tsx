@@ -2,7 +2,7 @@ import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {widthInDp} from '../../../utils';
 import {useUserContext} from '../../../context/UserContext';
-import {COLORS} from '../../../themes';
+import {COLORS, FONTS} from '../../../themes';
 import {ImageBox} from './screenComponents/imageBox';
 import {DetailsBox} from './screenComponents/detailsBox';
 
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     gap: widthInDp(5),
   },
-  heading: {fontSize: widthInDp(7), fontWeight: '500'},
+  heading: {fontSize: widthInDp(7), fontWeight: '500', fontFamily: FONTS.Inter},
   container: {
     flex: 1,
     borderWidth: widthInDp(0.5),

@@ -25,18 +25,14 @@ export default function DocsScreen() {
   };
 
   const OpenFile = () => {
-    console.log('s sl f');
     RNFS.downloadFile(options)
       .promise.then(() => {
-        console.log('first');
         FileViewer.open(localFile);
       })
       .then(() => {
-        console.log('first');
         // success
       })
       .catch(error => {
-        console.log(error);
         // error
       });
   };

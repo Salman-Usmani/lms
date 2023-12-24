@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import React, {useState} from 'react';
-import {COLORS, ICONS} from '../../../../themes';
+import {COLORS, FONTS, ICONS} from '../../../../themes';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {Files} from './files';
 
@@ -118,7 +118,7 @@ export const Resources = ({
             setSelectedFile('video');
           }}
           style={styles.resourceButtonStyle}>
-          <Text style={styles.title}>videos</Text>
+          <Text style={styles.title}>Videos</Text>
           {selectedFile === 'video' ? (
             <ICONS.MaterialIcons
               name="keyboard-arrow-up"
@@ -165,5 +165,5 @@ const styles = StyleSheet.create({
     gap: widthInDp(5),
     flex: 1,
   },
-  title: {color: COLORS.black, flex: 1},
+  title: {color: COLORS.black, flex: 1, fontFamily: FONTS.Inter},
 });

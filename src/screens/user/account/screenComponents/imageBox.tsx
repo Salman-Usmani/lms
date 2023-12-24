@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 import {Button, ImagePicker} from '../../../../components';
 import {UserData} from '../../../../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {FONTS} from '../../../../themes';
 
 interface IImageBox {
   name?: string;
@@ -19,7 +20,6 @@ export const ImageBox = ({name, avatar, setUpdatedUser}: IImageBox) => {
 
   async function updateAvatar(data: any) {
     try {
-      console.log(data);
       setLoading(true);
       let imageData = new FormData();
       imageData.append('avatar', data);
@@ -27,7 +27,6 @@ export const ImageBox = ({name, avatar, setUpdatedUser}: IImageBox) => {
       const avatarUpdateApi = await dataServer.put('user/avatar', imageData);
       setLoading(false);
       if (avatarUpdateApi.status === 200) {
-        console.log('avatarUpdateApi', avatarUpdateApi.data.data);
         setUpdatedUser(avatarUpdateApi.data.data);
         await AsyncStorage.setItem(
           'userData',
@@ -39,15 +38,14 @@ export const ImageBox = ({name, avatar, setUpdatedUser}: IImageBox) => {
         });
       }
     } catch (error: any) {
-      console.log('error on cohort screen', error.response.data);
       setLoading(false);
       Toast.show({
         type: 'error',
         text1: Array.isArray(error?.response?.data?.errors)
           ? error?.response?.data?.errors[0]
           : error?.response?.data.message
-          ? error?.response?.data.message
-          : error.response?.data || 'Login Failed',
+            ? error?.response?.data.message
+            : error.response?.data || 'failed to update avatar',
       });
     }
   }
@@ -79,5 +77,10 @@ const styles = StyleSheet.create({
     borderRadius: widthInDp(100),
     alignSelf: 'center',
   },
-  title: {fontSize: widthInDp(5), fontWeight: '500', textAlign: 'center'},
+  title: {
+    fontSize: widthInDp(5),
+    fontWeight: '500',
+    textAlign: 'center',
+    fontFamily: FONTS.Inter,
+  },
 });

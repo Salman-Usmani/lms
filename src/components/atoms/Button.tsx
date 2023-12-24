@@ -10,21 +10,21 @@ import {
 
 import {SvgXml} from 'react-native-svg';
 import {IButton} from '../../types';
-import {COLORS} from '../../themes';
+import {COLORS, FONTS} from '../../themes';
 import {heightInDp, widthInDp} from '../../utils';
 
 export const Button = (props: IButton) => {
   const {title, background, handlePress, loading, svg, containerStyle} = props;
 
   return (
-    <TouchableOpacity
-      style={containerStyle}
-      onPress={handlePress}
-      disabled={loading}>
+    <TouchableOpacity onPress={handlePress} disabled={loading}>
       <View
         style={[
-          styles.btnInnerView,
-          {backgroundColor: background ? COLORS.primary : COLORS.disable},
+          {
+            ...styles.btnInnerView,
+            backgroundColor: background ? COLORS.primary : COLORS.disable,
+          },
+          containerStyle,
         ]}>
         {svg ? (
           <SvgXml
@@ -55,14 +55,6 @@ export const Button = (props: IButton) => {
 };
 
 const styles = StyleSheet.create({
-  btnView: {
-    borderWidth: widthInDp(0.7),
-    marginVertical: heightInDp(1),
-    borderRadius: widthInDp(10),
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   btnInnerView: {
     borderRadius: widthInDp(10),
     flexDirection: 'row',
@@ -73,6 +65,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: widthInDp(6),
+    fontFamily: FONTS.Inter,
     // color: colors.darkBlue,
   },
   svgStyle: {marginRight: widthInDp(5)},

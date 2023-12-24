@@ -1,6 +1,6 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import {COLORS, ICONS} from '../../../../themes';
+import {COLORS, FONTS, ICONS} from '../../../../themes';
 import {widthInDp} from '../../../../utils';
 import {Days} from './days';
 
@@ -37,11 +37,8 @@ const Item = ({
   selectedItem: string;
 }) => {
   return (
-    <View key={item._id} style={styles.moduleContainer}>
-      <TouchableOpacity
-        key={item._id}
-        onPress={onPress}
-        style={styles.moduleButtonStyle}>
+    <View style={styles.moduleContainer}>
+      <TouchableOpacity onPress={onPress} style={styles.moduleButtonStyle}>
         <View style={styles.titleView}>
           <ICONS.MaterialIcons
             name="view-module"
@@ -96,7 +93,11 @@ export const Modules = ({modules}: {modules: IModules[]}) => {
   };
 
   return (
-    <FlatList data={modules} renderItem={renderItem} nestedScrollEnabled />
+    <FlatList
+      data={modules}
+      renderItem={renderItem}
+      keyExtractor={Item => Item._id}
+    />
   );
 };
 
@@ -118,5 +119,5 @@ const styles = StyleSheet.create({
     gap: widthInDp(5),
     flex: 1,
   },
-  title: {color: COLORS.black, flex: 1},
+  title: {color: COLORS.black, flex: 1, fontFamily: FONTS.Inter},
 });

@@ -1,17 +1,21 @@
 export type {
-  AuthStackScreensList,
-  AuthStackNavigationProp,
-  RootStackScreensList,
-  RootStackNavigationProp,
-  BaseStackScreensList,
-  BaseStackNavigationProp,
-  CohortStackScreensList,
-  CohortStackNavigagtionProps,
-} from './NavigationTypes';
-export type {
   IButton,
-  ITextInput,
   ICountryCode,
   ICountrySelect,
+  ITextInput,
   UserData,
+  IGroups,
+  IGroupPost,
+  IGroupMember,
+  IComments,
 } from './Interface';
+export type {
+  AuthStackNavigationProp,
+  AuthStackScreensList,
+  CohortStackNavigagtionProps,
+  CohortStackScreensList,
+  GroupStackNavigagtionProps,
+  GroupStackScreensList,
+  RootStackNavigationProp,
+  RootStackScreensList,
+} from './NavigationTypes';
