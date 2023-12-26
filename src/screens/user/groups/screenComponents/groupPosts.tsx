@@ -10,33 +10,26 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import VideoPlayer from 'react-native-video-controls';
+import {useUserContext} from '../../../../context/UserContext';
+import {dataServer} from '../../../../services/axiosConfig';
 import {COLORS, FONTS, ICONS} from '../../../../themes';
-import {
-  GroupStackNavigagtionProps,
-  GroupStackScreensList,
-  IComments,
-  IGroupPost,
-} from '../../../../types';
+import {IGroupPost} from '../../../../types';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {PostsComments} from './postsComments';
-import {dataServer} from '../../../../services/axiosConfig';
-import Toast from 'react-native-toast-message';
-import {useUserContext} from '../../../../context/UserContext';
-import {StackNavigationProp} from '@react-navigation/stack';
+import RNFS from 'react-native-fs';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
 export const GroupPosts = ({
   groupPosts,
-  navigation,
+  setGroupPosts,
 }: {
   groupPosts: IGroupPost[] | [];
-  navigation: StackNavigationProp<
-    GroupStackScreensList,
-    'GroupDetailsScreen',
-    undefined
-  >;
+  setGroupPosts: React.Dispatch<React.SetStateAction<IGroupPost[]>>;
 }) => {
   const [isLoading, setLoading] = useState(false);
+  const [isLikeLoading, setLikeLoading] = useState(false);
   const {user} = useUserContext();
   const inputRef = useRef<TextInput>(null);
 
@@ -79,44 +72,50 @@ export const GroupPosts = ({
     }
   }
   async function onLikePost(item: {postId: string}) {
-    let tempIndex = groupPosts.findIndex(value => value._id === item.postId);
-    // if (groupPosts[tempIndex].likes.some(value => value._id === user?._id)) {
-    //  let newLikes =  groupPosts[tempIndex].likes.filter(gpl => gpl._id !== user?._id);
-    //  console.log(
-
-    //  )
-    //  groupPosts[tempIndex].likes = newLikes || []
-    //   return;
-    // }
-
     try {
-      setLoading(true);
-      const likePostApi = await dataServer.post('user/post/like', item);
+      const isLike = groupPosts.some(
+        value =>
+          value._id === item.postId &&
+          value.likes.some(like => like._id === user?._id),
+      );
+      setLikeLoading(false);
+      const likeUrl = isLike ? 'user/post/unlike' : 'user/post/like';
+      const likePostApi = await dataServer.post(likeUrl, item);
       if (likePostApi.status === 200) {
-        let tempIndex = groupPosts.findIndex(
-          value => value._id === likePostApi.data.data.post._id,
+        setGroupPosts(
+          groupPosts.map(post =>
+            post._id === likePostApi.data.data.post._id
+              ? {...post, likes: likePostApi.data.data.post.likes}
+              : post,
+          ),
         );
-        if (tempIndex !== -1 && user) {
-          let newLike = {
-            _id: user?._id || '',
-            name: user?.name || '',
-            email: user?.email || '',
-            phoneNo: user?.phoneNo || '',
-            role: user?.role || '',
-            country: user?.country || '',
-            state: user?.state || '',
-            avatar: user?.avatar || '',
-          };
-          groupPosts[tempIndex].likes.unshift(newLike);
-        }
-        setLoading(false);
-        Toast.show({
-          type: 'success',
-          text1: likePostApi.data.message,
-        });
+        setLikeLoading(false);
       }
     } catch (error: any) {
-      setLoading(false);
+      setLikeLoading(false);
+    }
+  }
+  async function onDeleteComment(item: {postId: string; commentId: string}) {
+    try {
+      const deleteCommentApi = await dataServer.delete('user/post/comment', {
+        data: item,
+      });
+      if (deleteCommentApi.status === 200) {
+        setGroupPosts(
+          groupPosts.map(post => {
+            if (post._id === item.postId) {
+              let cmnt = post.comments.filter(
+                cmnt => cmnt._id !== deleteCommentApi.data.data.data,
+              );
+              return {
+                ...post,
+                comments: cmnt,
+              };
+            } else return post;
+          }),
+        );
+      }
+    } catch (error: any) {
       Toast.show({
         type: 'error',
         text1: Array.isArray(error?.response?.data?.errors)
@@ -127,25 +126,81 @@ export const GroupPosts = ({
       });
     }
   }
+  function getExtensionFromUrl(url: string) {
+    // Split the URL by dot (.) and get the last part as the extension
+    const parts = url.split('.');
+    if (parts.length > 1) {
+      return parts[parts.length - 1];
+    } else {
+      return ''; // No extension found
+    }
+  }
+  async function downloadFileWithRetry(fileUrl = '', title: string) {
+    if (!fileUrl) {
+      return;
+    }
+    try {
+      setLoading(true);
+
+      const extension = getExtensionFromUrl(fileUrl);
+      const fileName = fileUrl.split('/').pop();
+
+      const localFile = `${RNFS.DownloadDirectoryPath}/${fileName}`;
+      // ReactNativeBlobUtil.fs.dirs.DownloadDir + '/' + fileName;
+
+      // const exists = await ReactNativeBlobUtil.fs.exists(localFile);
+      // if (exists) {
+      //   Toast.show({
+      //     type: 'info',
+      //     text1: 'file already exists',
+      //   });
+      //   return;
+      // }
+
+      await ReactNativeBlobUtil.config({
+        fileCache: false,
+        appendExt: extension,
+        addAndroidDownloads: {
+          useDownloadManager: true,
+          notification: true,
+          title: title,
+          path: localFile,
+        },
+      })
+        .fetch('GET', fileUrl)
+        .progress((received, total) => {
+          Toast.show({
+            type: 'info',
+            text1: `${((Number(received) / Number(total)) * 100).toFixed(
+              2,
+            )}% downloaded`,
+          });
+        })
+        .then(res => {
+          console.log('path', res.path());
+        });
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      Toast.show({
+        type: 'info',
+        text1: String(error),
+      });
+    }
+  }
 
   const renderItem = ({item}: {item: IGroupPost}) => {
-    // const postCreator = groupMembers.find(
-    //   gm => gm.member._id === item.postCreator._id,
-    // );
     return (
       <Item
         item={item}
         inputRef={inputRef}
         isLoading={isLoading}
-        videoPlayer={() => {
-          {
-            item.media?.s3PublicUrl &&
-              navigation.navigate('Media', {
-                fileType: 'video',
-                url: item.media?.s3PublicUrl,
-              });
-          }
-        }}
+        isLikeLoading={isLikeLoading}
+        onpressDownload={downloadFileWithRetry}
+        onDeleteComment={commentId =>
+          onDeleteComment({postId: item._id, commentId: commentId})
+        }
         onPress={text =>
           onPostComment({
             postId: item._id,
@@ -157,6 +212,7 @@ export const GroupPosts = ({
             postId: item._id,
           });
         }}
+        userId={user?._id || ''}
       />
     );
   };
@@ -177,17 +233,22 @@ const Item = ({
   item,
   onPress,
   inputRef,
-  isLoading,
-  videoPlayer,
+  onpressDownload,
   onPressThumbsUp,
+  onDeleteComment,
+  isLoading,
+  isLikeLoading,
+  userId,
 }: {
   item: IGroupPost;
   onPress: (text: string) => void;
+  onPressThumbsUp: () => void;
+  onDeleteComment: (commentId: string) => void;
+  onpressDownload: (url: string, title: string) => void;
   inputRef: LegacyRef<TextInput>;
   isLoading: boolean;
-  videoPlayer: () => void;
-  onPressThumbsUp: () => void;
-  // selectedItem: string;
+  isLikeLoading: boolean;
+  userId: string;
 }) => {
   const [commentsVisible, setCommentsVisible] = useState(false);
   const [comment, setComment] = useState('');
@@ -269,22 +330,19 @@ const Item = ({
             }}
           />
         ) : item.media?.mimetype.includes('application') ? (
-          <View style={{flexDirection: 'row', gap: widthInDp(2)}}>
+          <TouchableOpacity
+            onPress={() =>
+              onpressDownload(
+                item?.media?.s3PublicUrl || '',
+                item.media?.originalName || '',
+              )
+            }
+            style={{flexDirection: 'row', gap: widthInDp(2)}}>
             <ICONS.MaterialCommunityIcons name="download" size={widthInDp(5)} />
             <Text>{item.media.originalName}</Text>
-          </View>
+          </TouchableOpacity>
         ) : (
           item.media?.mimetype.includes('video') && (
-            // <TouchableOpacity
-            //   onPress={videoPlayer}
-            //   style={{flexDirection: 'row', gap: widthInDp(2)}}>
-            //   <ICONS.FontAwesome6
-            //     name="play"
-            //     size={widthInDp(5)}
-            //     color={COLORS.black}
-            //   />
-            //   <Text>{item.media.originalName}</Text>
-            // </TouchableOpacity>
             <View
               style={{
                 height: heightInDp(30),
@@ -312,7 +370,9 @@ const Item = ({
             alignItems: 'center',
           }}>
           <View style={{flexDirection: 'row', gap: widthInDp(1)}}>
-            <TouchableOpacity onPress={onPressThumbsUp}>
+            <TouchableOpacity
+              disabled={isLikeLoading}
+              onPress={onPressThumbsUp}>
               <ICONS.MaterialIcons
                 name="thumb-up-alt"
                 size={widthInDp(7)}
@@ -328,11 +388,14 @@ const Item = ({
               {item.likes.length}
             </Text>
 
-            <ICONS.MaterialCommunityIcons
-              name="comment-text"
-              size={widthInDp(7)}
-              color={COLORS.textSecondary}
-            />
+            <TouchableOpacity
+              onPress={() => setCommentsVisible(!commentsVisible)}>
+              <ICONS.MaterialCommunityIcons
+                name="comment-text"
+                size={widthInDp(7)}
+                color={COLORS.textSecondary}
+              />
+            </TouchableOpacity>
             <Text style={{color: COLORS.textSecondary, fontSize: widthInDp(5)}}>
               {item.comments.length}
             </Text>
@@ -425,7 +488,13 @@ const Item = ({
           )}
         </TouchableOpacity>
       </View>
-      {commentsVisible && <PostsComments postsComments={item.comments} />}
+      {commentsVisible && item.comments.length > 0 && (
+        <PostsComments
+          postsComments={item.comments}
+          userId={userId}
+          onDeleteComment={(commentId: string) => onDeleteComment(commentId)}
+        />
+      )}
     </>
   );
 };
@@ -450,7 +519,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   subTitle: {
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
     fontSize: widthInDp(3),
     color: COLORS.primary,
   },
@@ -464,7 +533,7 @@ const styles = StyleSheet.create({
     borderRadius: widthInDp(1.5),
   },
   title: {
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
     fontSize: widthInDp(5),
     color: COLORS.primary,
     fontWeight: '700',

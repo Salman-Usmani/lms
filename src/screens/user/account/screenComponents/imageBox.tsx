@@ -81,6 +81,6 @@ const styles = StyleSheet.create({
     fontSize: widthInDp(5),
     fontWeight: '500',
     textAlign: 'center',
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
 });

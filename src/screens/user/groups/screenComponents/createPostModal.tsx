@@ -18,6 +18,8 @@ import DocumentPicker from 'react-native-document-picker';
 import {dataServer} from '../../../../services/axiosConfig';
 import Toast from 'react-native-toast-message';
 import {Controller, useForm} from 'react-hook-form';
+import {IGroupPost} from '../../../../types';
+import VideoPlayer from 'react-native-video-controls';
 
 type TgroupPost = {
   content?: string;
@@ -32,9 +34,11 @@ export const CreatePostModal = ({
   avatar,
   name,
   groupId,
+  setGroupPosts,
 }: {
   visible: boolean;
   onRequestClose: () => void;
+  setGroupPosts: (item: IGroupPost) => void;
   avatar?: string;
   name?: string;
   groupId: string;
@@ -66,7 +70,10 @@ export const CreatePostModal = ({
 
       const uploadMediaApi = await dataServer.post('user/post', data);
       if (uploadMediaApi.status === 200) {
+        console.log('skdnflalsa', uploadMediaApi.data.data);
+        setGroupPosts(uploadMediaApi.data.data.post);
         setLoading(false);
+        onRequestClose();
         Toast.show({
           type: 'success',
           text1: uploadMediaApi.data.message,
@@ -251,7 +258,7 @@ export const CreatePostModal = ({
                         backgroundColor: COLORS.white,
                         padding: 0,
                         //   borderWidth: 0.5,
-                        fontFamily: FONTS.Inter,
+                        fontFamily: FONTS.InterRegular,
                         borderColor: errors.content?.message
                           ? COLORS.error
                           : undefined,
@@ -283,9 +290,12 @@ export const CreatePostModal = ({
                         />
                       </TouchableOpacity>
                       <TouchableOpacity
-                        //   onPress={() => {
-                        //     onPress(comment);
-                        //   }}
+                        onPress={() => {
+                          pickImage('VIDEO').then(data => {
+                            // console.log('adjlkasdjlakdjfkld', data);
+                            onMediaSelect(data);
+                          });
+                        }}
                         style={{}}>
                         <SvgXml
                           xml={videoUploadIcon}
@@ -335,7 +345,7 @@ export const CreatePostModal = ({
                       style={{
                         color: COLORS.error,
                         marginHorizontal: widthInDp(3),
-                        fontFamily: FONTS.Inter,
+                        fontFamily: FONTS.InterRegular,
                       }}>
                       {errors.content?.message}
                     </Text>
@@ -371,22 +381,39 @@ export const CreatePostModal = ({
                   }}
                 />
               </View>
+            ) : postMedia?.type?.includes('application') ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  gap: widthInDp(3),
+                  marginTop: heightInDp(2),
+                }}>
+                <ICONS.SimpleLineIcons
+                  name="paper-clip"
+                  size={widthInDp(5)}
+                  color={COLORS.numColor}
+                />
+                <Text style={{color: COLORS.linkColor}}>{postMedia.name}</Text>
+              </View>
             ) : (
-              postMedia?.type?.includes('application') && (
+              postMedia?.type?.includes('video') &&
+              postMedia.uri && (
                 <View
                   style={{
-                    flexDirection: 'row',
-                    gap: widthInDp(3),
+                    height: heightInDp(30),
                     marginTop: heightInDp(2),
+                    width: 'auto',
+                    borderRadius: widthInDp(3),
                   }}>
-                  <ICONS.SimpleLineIcons
-                    name="paper-clip"
-                    size={widthInDp(5)}
-                    color={COLORS.numColor}
+                  <VideoPlayer
+                    tapAnywhereToPause
+                    disableBack
+                    source={{
+                      uri: postMedia?.uri,
+                    }}
+                    // navigator={navigation}
+                    toggleResizeModeOnFullscreen={true}
                   />
-                  <Text style={{color: COLORS.linkColor}}>
-                    {postMedia.name}
-                  </Text>
                 </View>
               )
             )}
@@ -394,6 +421,7 @@ export const CreatePostModal = ({
           <Button
             title={'Post'}
             background={true}
+            loading={isLoading}
             handlePress={handleSubmit(onCreatePost)}
             containerStyle={{
               borderRadius: widthInDp(2),

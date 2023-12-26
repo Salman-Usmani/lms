@@ -1,50 +1,66 @@
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import moment from 'moment';
 import React, {useState} from 'react';
+import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
+import {COLORS, ICONS} from '../../../../themes';
 import {IComments} from '../../../../types';
 import {heightInDp, widthInDp} from '../../../../utils';
-import {COLORS, FONTS, ICONS} from '../../../../themes';
-import moment from 'moment';
+import {CommentDeletePrompt} from './deleteComment';
 
 export const PostsComments = ({
   postsComments,
+  userId,
+  onDeleteComment,
 }: {
   postsComments: IComments[] | [];
+  userId: string;
+  onDeleteComment: (commentId: string) => void;
 }) => {
+  const [isDeleteModal, setDeleteModal] = useState('');
   const renderItem = ({item}: {item: IComments}) => {
     return (
       <Item
-        item={item} // onPress={() => onPress(item)}
+        item={item}
+        userId={userId}
+        onPressDelete={() => setDeleteModal(item._id)}
       />
     );
   };
   return (
-    <FlatList
-      scrollEnabled={false}
-      data={postsComments}
-      renderItem={renderItem}
-      keyExtractor={Item => Item._id}
-      ListHeaderComponent={() => <Text style={styles.headerText}>Replies</Text>}
-      style={styles.listStyle}
-      ItemSeparatorComponent={Separator}
-    />
+    <>
+      <FlatList
+        scrollEnabled={false}
+        data={postsComments}
+        renderItem={renderItem}
+        keyExtractor={Item => Item._id}
+        ListHeaderComponent={() => (
+          <Text style={styles.headerText}>Replies</Text>
+        )}
+        style={styles.listStyle}
+        ItemSeparatorComponent={Separator}
+      />
+      <CommentDeletePrompt
+        showModal={isDeleteModal ? true : false}
+        setShowModal={() => {
+          setDeleteModal('');
+        }}
+        handleDeleteComment={() => {
+          onDeleteComment(isDeleteModal);
+          setDeleteModal('');
+        }}
+      />
+    </>
   );
 };
 
 const Item = ({
-  item, // onPress,
+  item,
+  userId,
+  onPressDelete,
 }: {
   item: IComments;
-  // onPress: () => void;
+  userId: string;
+  onPressDelete: () => void;
 }) => {
-  const [commentsVisible, setCommentsVisible] = useState(false);
-
   return (
     <View style={styles.container}>
       <View style={{flex: 1, flexDirection: 'row'}}>
@@ -107,9 +123,6 @@ const Item = ({
       <View
         style={{
           flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
         }}>
         <Text
           style={{
@@ -119,6 +132,15 @@ const Item = ({
           }}>
           {item.content}
         </Text>
+        {userId === item.user?._id && (
+          <ICONS.Ionicons
+            onPress={onPressDelete}
+            name="trash"
+            color={COLORS.error}
+            size={widthInDp(5)}
+            style={{alignSelf: 'flex-end'}}
+          />
+        )}
       </View>
     </View>
   );

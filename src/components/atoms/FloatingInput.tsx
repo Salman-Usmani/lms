@@ -89,7 +89,7 @@ export const FloatingTitleTextInputField = ({
         style={{
           backgroundColor: COLORS.white,
           borderWidth: 0.5,
-          fontFamily: FONTS.Inter,
+          fontFamily: FONTS.InterRegular,
           borderColor: errorMsg ? COLORS.error : undefined,
           borderRadius: widthInDp(2),
           borderTopLeftRadius: widthInDp(2),
@@ -101,7 +101,7 @@ export const FloatingTitleTextInputField = ({
           style={{
             color: COLORS.error,
             marginHorizontal: widthInDp(3),
-            fontFamily: FONTS.Inter,
+            fontFamily: FONTS.InterRegular,
           }}>
           {errorMsg}
         </Text>

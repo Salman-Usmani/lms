@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     textAlign: 'center',
     textAlignVertical: 'center',
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
   btnView: {
     flex: 1,

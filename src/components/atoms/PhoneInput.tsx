@@ -35,7 +35,7 @@ export const PhoneInput = (props: ITextInput) => {
 
   return (
     <View>
-      {title && <Text style={{fontFamily: FONTS.Inter}}>{title}</Text>}
+      {title && <Text style={{fontFamily: FONTS.InterRegular}}>{title}</Text>}
       <View
         style={{
           borderWidth: 0.5,
@@ -45,7 +45,7 @@ export const PhoneInput = (props: ITextInput) => {
         <TouchableOpacity
           onPress={() => setIsModal(true)}
           style={styles.leftIconButton}>
-          <Text style={{fontFamily: FONTS.Inter}}>
+          <Text style={{fontFamily: FONTS.InterRegular}}>
             {selectedCountry.flag} {selectedCountry.dial_code}{' '}
           </Text>
           <ICONS.AntDesign name="caretdown" size={widthInDp(2)} />
@@ -77,7 +77,7 @@ export const PhoneInput = (props: ITextInput) => {
           style={{
             color: COLORS.error,
             marginHorizontal: widthInDp(3),
-            fontFamily: FONTS.Inter,
+            fontFamily: FONTS.InterRegular,
           }}>
           {errormsg}
         </Text>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   inputField: {
     flex: 1,
     color: COLORS.black,
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
   leftIconButton: {
     borderRightWidth: 0.5,

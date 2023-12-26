@@ -22,6 +22,6 @@ const styles = StyleSheet.create({
   labelStyle: {
     textAlign: 'center',
     color: COLORS.primary,
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
 });

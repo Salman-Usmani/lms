@@ -91,6 +91,6 @@ const styles = StyleSheet.create({
     top: heightInDp(15),
   },
   btnContainer: {marginVertical: heightInDp(1), flexDirection: 'row'},
-  btnText: {color: COLORS.black, fontFamily: FONTS.Inter},
+  btnText: {color: COLORS.black, fontFamily: FONTS.InterRegular},
   dividerLine: {height: heightInDp(0.1), backgroundColor: 'lightgrey'},
 });

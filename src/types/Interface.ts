@@ -103,7 +103,7 @@ export interface IGroupPost {
     avatar?: string;
   };
   isGroupAdminApproved: boolean;
-  comments: [IComments];
+  comments: IComments[];
   likes: [ILikes];
   media: {
     _id: string;

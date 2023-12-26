@@ -26,19 +26,24 @@ const Item = ({item, onPress}: {item: IGroups; onPress: () => void}) => {
         borderRadius: widthInDp(3),
         gap: widthInDp(3),
         padding: widthInDp(3),
-        backgroundColor: COLORS.white,
+        // backgroundColor: COLORS.white,
       }}>
       <Image
         source={{uri: item.avatar}}
-        height={widthInDp(23)}
-        width={widthInDp(25)}
-        style={{borderRadius: widthInDp(3), borderWidth: 1}}
+        // height={widthInDp(23)}
+        // width={widthInDp(25)}
+        style={{
+          borderRadius: widthInDp(3),
+          borderWidth: 1,
+          height: widthInDp(23),
+          width: widthInDp(25),
+        }}
       />
       <View style={{flex: 1}}>
         <Text
           numberOfLines={1}
           style={{
-            fontFamily: FONTS.Inter,
+            fontFamily: FONTS.InterRegular,
             fontSize: widthInDp(4),
             color: COLORS.black,
             fontWeight: '700',
@@ -48,7 +53,7 @@ const Item = ({item, onPress}: {item: IGroups; onPress: () => void}) => {
         <Text
           numberOfLines={2}
           style={{
-            fontFamily: FONTS.Inter,
+            fontFamily: FONTS.InterRegular,
             fontSize: widthInDp(4),
             color: COLORS.black,
           }}>
@@ -123,7 +128,7 @@ export const Groups = ({
     <View style={styles.container}>
       <Text
         style={{
-          fontFamily: FONTS.Inter,
+          fontFamily: FONTS.InterRegular,
           fontSize: widthInDp(5),
           color: COLORS.primary,
           fontWeight: '700',

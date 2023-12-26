@@ -42,7 +42,7 @@ const GroupScreen = ({
   async function fetchUserGroup() {
     try {
       setLoading(true);
-      const fetchUserGroupsApi = await dataServer.get('/user/groups');
+      const fetchUserGroupsApi = await dataServer.get('user/groups');
       if (fetchUserGroupsApi.status === 200) {
         setGroups(fetchUserGroupsApi.data.data.groups);
         setLoading(false);
@@ -80,7 +80,7 @@ const GroupScreen = ({
     <ScrollView contentContainerStyle={styles.mainContainer}>
       <Text
         style={{
-          fontFamily: FONTS.Inter,
+          fontFamily: FONTS.InterRegular,
           fontSize: widthInDp(5),
           color: COLORS.primary,
           fontWeight: '700',
@@ -89,7 +89,7 @@ const GroupScreen = ({
       </Text>
       <Text
         style={{
-          fontFamily: FONTS.Inter,
+          fontFamily: FONTS.InterRegular,
           fontSize: widthInDp(3),
           color: COLORS.primary,
         }}>

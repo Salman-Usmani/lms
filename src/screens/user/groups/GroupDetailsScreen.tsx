@@ -23,7 +23,6 @@ const GroupDetailsScreen = ({
 }: GroupStackNavigagtionProps<'GroupDetailsScreen'>) => {
   const {_id, name, avatar, groupOwners, createdAt, description, groupMembers} =
     route.params;
-
   const {user} = useUserContext();
   const [isLoading, setLoading] = useState(false);
   const [isModal, setShowModal] = useState(false);
@@ -77,7 +76,12 @@ const GroupDetailsScreen = ({
       <Text style={styles.subTitle}>
         Group {'>'} {name}
       </Text>
-      <Image source={{uri: avatar}} style={styles.groupImage} />
+      <Image
+        source={{uri: avatar}}
+        resizeMode="contain"
+        style={styles.groupImage}
+      />
+
       <View style={styles.container}>
         <Text style={styles.heading}>Group Created by</Text>
         <View style={{flexDirection: 'row'}}>
@@ -278,12 +282,13 @@ const GroupDetailsScreen = ({
         </TouchableOpacity>
       </View>
 
-      <GroupPosts groupPosts={groupPosts || []} navigation={navigation} />
+      <GroupPosts groupPosts={groupPosts || []} setGroupPosts={setGroupPosts} />
       <CreatePostModal
         visible={isModal}
         onRequestClose={() => {
           setShowModal(false);
         }}
+        setGroupPosts={item => groupPosts.unshift(item)}
         avatar={user?.avatar}
         name={user?.name}
         groupId={_id}
@@ -313,7 +318,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   subTitle: {
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
     fontSize: widthInDp(3),
     color: COLORS.primary,
   },
@@ -327,7 +332,7 @@ const styles = StyleSheet.create({
     borderRadius: widthInDp(1.5),
   },
   title: {
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
     fontSize: widthInDp(5),
     color: COLORS.primary,
     fontWeight: '700',

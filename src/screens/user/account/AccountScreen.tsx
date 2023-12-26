@@ -42,7 +42,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     gap: widthInDp(5),
   },
-  heading: {fontSize: widthInDp(7), fontWeight: '500', fontFamily: FONTS.Inter},
+  heading: {
+    fontSize: widthInDp(7),
+    fontWeight: '500',
+    fontFamily: FONTS.InterRegular,
+  },
   container: {
     flex: 1,
     borderWidth: widthInDp(0.5),

@@ -196,7 +196,10 @@ const SignUpScreen = ({navigation}: AuthStackNavigationProp<'SignUp'>) => {
                 onTintColor={COLORS.black}
               />
               <Text
-                style={{textAlignVertical: 'center', fontFamily: FONTS.Inter}}>
+                style={{
+                  textAlignVertical: 'center',
+                  fontFamily: FONTS.InterRegular,
+                }}>
                 I accept the terms and conditions
               </Text>
             </View>
@@ -218,11 +221,11 @@ export default SignUpScreen;
 const styles = StyleSheet.create({
   title: {
     fontSize: heightInDp(5),
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
   noAccountStyle: {
     color: COLORS.darkGray,
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
   register: {
     color: COLORS.primary,

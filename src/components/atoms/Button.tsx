@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: widthInDp(6),
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
     // color: colors.darkBlue,
   },
   svgStyle: {marginRight: widthInDp(5)},

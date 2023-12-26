@@ -7,22 +7,21 @@ import {
 } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 
-const DEFAULT_OPTIONS: ImageLibraryOptions & CameraOptions = {
-  mediaType: 'photo',
-  quality: 1,
-  maxWidth: 0,
-  maxHeight: 0,
-  includeBase64: false,
-  cameraType: 'back',
-  selectionLimit: 1,
-  saveToPhotos: false,
-  includeExtra: false,
-  presentationStyle: 'pageSheet',
-};
-
-export const pickImage = async (pickType: 'GALLERY' | 'cAMERA') => {
+export const pickImage = async (pickType: 'GALLERY' | 'cAMERA' | 'VIDEO') => {
+  const DEFAULT_OPTIONS: ImageLibraryOptions & CameraOptions = {
+    mediaType: pickType === 'VIDEO' ? 'video' : 'photo',
+    quality: 1,
+    maxWidth: 0,
+    maxHeight: 0,
+    includeBase64: false,
+    cameraType: 'back',
+    selectionLimit: 1,
+    saveToPhotos: false,
+    includeExtra: false,
+    presentationStyle: 'pageSheet',
+  };
   let result: ImagePickerResponse;
-  if (pickType === 'GALLERY') {
+  if (pickType === 'GALLERY' || pickType === 'VIDEO') {
     result = await launchImageLibrary(DEFAULT_OPTIONS);
   } else {
     result = await launchCamera(DEFAULT_OPTIONS);

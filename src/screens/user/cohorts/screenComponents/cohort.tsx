@@ -123,5 +123,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   titleView: {flexDirection: 'row', columnGap: widthInDp(5)},
-  title: {color: COLORS.white, fontFamily: FONTS.Inter},
+  title: {color: COLORS.white, fontFamily: FONTS.InterRegular},
 });

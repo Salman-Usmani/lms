@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   portalText: {
     fontSize: widthInDp(5),
     color: COLORS.primary,
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
   portalSubText: {fontSize: widthInDp(3)},
   footer: {
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   footerText: {
     textAlign: 'center',
     color: COLORS.primary,
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
 });
 

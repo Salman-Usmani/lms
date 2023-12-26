@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: heightInDp(5),
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
   noAccountStyle: {
     color: COLORS.darkGray,
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
   register: {
     color: COLORS.primary,

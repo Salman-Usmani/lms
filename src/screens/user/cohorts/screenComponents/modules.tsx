@@ -119,5 +119,5 @@ const styles = StyleSheet.create({
     gap: widthInDp(5),
     flex: 1,
   },
-  title: {color: COLORS.black, flex: 1, fontFamily: FONTS.Inter},
+  title: {color: COLORS.black, flex: 1, fontFamily: FONTS.InterRegular},
 });

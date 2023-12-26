@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
     fontSize: widthInDp(5),
     textAlign: 'center',
     color: COLORS.primary,
-    fontFamily: FONTS.Inter,
+    fontFamily: FONTS.InterRegular,
   },
 });
