@@ -19,7 +19,7 @@ import {dataServer} from '../../services/axiosConfig';
 import {COLORS, FONTS} from '../../themes';
 import {heightInDp, widthInDp} from '../../utils';
 import {useForm, Controller, Resolver} from 'react-hook-form';
-import CheckBox from '@react-native-community/checkbox';
+import {Checkbox} from 'react-native-paper';
 import {CommonActions} from '@react-navigation/native';
 import {EMAIL_REGEX} from '../../constants';
 
@@ -186,14 +186,11 @@ const SignUpScreen = ({navigation}: AuthStackNavigationProp<'SignUp'>) => {
           }}
           render={({field: {onChange, onBlur, value}}) => (
             <View style={styles.checkBoxView}>
-              <CheckBox
-                value={value}
-                hideBox={true}
-                onChange={() => onChange(!value)}
-                tintColor={COLORS.black}
-                onCheckColor={COLORS.black}
-                onFillColor={COLORS.primary}
-                onTintColor={COLORS.black}
+              <Checkbox
+                status={value ? 'checked' : 'unchecked'}
+                onPress={() => onChange(!value)}
+                color={COLORS.primary}
+                uncheckedColor={COLORS.darkGray}
               />
               <Text
                 style={{
