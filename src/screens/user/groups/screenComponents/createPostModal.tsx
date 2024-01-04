@@ -20,9 +20,10 @@ import Toast from 'react-native-toast-message';
 import {Controller, useForm} from 'react-hook-form';
 import {IGroupPost} from '../../../../types';
 import VideoPlayer from 'react-native-video-controls';
+import EmojiPicker, {EmojiType} from 'rn-emoji-keyboard';
 
 type TgroupPost = {
-  content?: string;
+  content: string;
   groupId: string;
   mediaId?: string;
   title: string;
@@ -53,16 +54,26 @@ export const CreatePostModal = ({
     | undefined
   >(null);
   const [isLoading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     control,
     handleSubmit,
     setValue,
     getValues,
+    reset,
     formState: {errors},
-  } = useForm<TgroupPost>();
-  useEffect(() => {
-    setValue('groupId', groupId);
-  }, []);
+  } = useForm<TgroupPost>({
+    defaultValues: {
+      content: '',
+      title: '',
+      groupId,
+    },
+  });
+  // useEffect(() => {
+  //   console.log(groupId);
+  //   setValue('groupId', groupId);
+  // }, [groupId]);
 
   async function onCreatePost(data: TgroupPost) {
     try {
@@ -70,10 +81,9 @@ export const CreatePostModal = ({
 
       const uploadMediaApi = await dataServer.post('user/post', data);
       if (uploadMediaApi.status === 200) {
-        console.log('skdnflalsa', uploadMediaApi.data.data);
         setGroupPosts(uploadMediaApi.data.data.post);
         setLoading(false);
-        onRequestClose();
+        onClose();
         Toast.show({
           type: 'success',
           text1: uploadMediaApi.data.message,
@@ -157,16 +167,22 @@ export const CreatePostModal = ({
       });
     }
   }
+  function onClose() {
+    reset({content: '', groupId: '', mediaId: '', title: ''});
+    setPostMedia(null);
+    onRequestClose();
+  }
+  function handlePick(emoji: EmojiType): void {
+    setValue('content', getValues('content') + emoji.emoji);
+  }
 
   return (
-    <Modal visible={visible} transparent={true} onRequestClose={onRequestClose}>
+    <Modal visible={visible} transparent={true}>
       <View style={styles.mainContainer}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.heading}>Create Post</Text>
-            <TouchableOpacity
-              onPress={onRequestClose}
-              style={styles.closeBtnStyle}>
+            <TouchableOpacity onPress={onClose} style={styles.closeBtnStyle}>
               <ICONS.AntDesign
                 name="closecircle"
                 size={widthInDp(7)}
@@ -292,7 +308,6 @@ export const CreatePostModal = ({
                       <TouchableOpacity
                         onPress={() => {
                           pickImage('VIDEO').then(data => {
-                            // console.log('adjlkasdjlakdjfkld', data);
                             onMediaSelect(data);
                           });
                         }}
@@ -331,7 +346,8 @@ export const CreatePostModal = ({
                           color={COLORS.numColor}
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity>
+
+                      <TouchableOpacity onPress={() => setIsOpen(true)}>
                         <ICONS.FontAwesome5
                           name="smile"
                           size={widthInDp(5)}
@@ -431,6 +447,11 @@ export const CreatePostModal = ({
         </View>
       </View>
       <Toast position="bottom" bottomOffset={20} config={toastConfig} />
+      <EmojiPicker
+        onEmojiSelected={handlePick}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </Modal>
   );
 };

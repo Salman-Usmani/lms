@@ -20,9 +20,7 @@
     "@react-navigation/drawer": "^6.6.4",
     "@react-navigation/native": "^6.1.8",
     "@react-navigation/stack": "^6.3.18",
-    "aws-sdk": "^2.1509.0",
     "axios": "^1.5.1",
-    "expo-screen-orientation": "^6.2.0",
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-hook-form": "^7.47.0",
@@ -46,7 +44,7 @@
     "react-native-vector-icons": "^10.0.0",
     "react-native-video": "^5.2.1",
     "react-native-video-controls": "^2.8.1",
-    "react-native-webview": "^13.6.2"
+    "rn-emoji-keyboard": "^1.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",

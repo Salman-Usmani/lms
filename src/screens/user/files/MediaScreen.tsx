@@ -9,7 +9,6 @@ const MediaScreen = ({
   navigation,
   route,
 }: CohortStackNavigagtionProps<'Media'>) => {
-  console.log('kfhgfhgv', route.params);
   const {fileType, url} = route.params;
   return (
     <View style={{flex: 1}}>
