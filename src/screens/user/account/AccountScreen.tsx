@@ -37,7 +37,6 @@ export default AccountScreen;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    // flex: 1,
     paddingHorizontal: widthInDp(5),
     backgroundColor: COLORS.white,
     gap: widthInDp(5),
@@ -52,16 +51,7 @@ const styles = StyleSheet.create({
     borderWidth: widthInDp(0.5),
     borderColor: COLORS.lightBlue,
     borderRadius: widthInDp(5),
-    // justifyContent: 'center',
-    // alignItems: 'center',
     gap: widthInDp(5),
     padding: widthInDp(5),
   },
-  imageStyle: {
-    width: widthInDp(50),
-    height: widthInDp(50),
-    borderRadius: widthInDp(100),
-    alignSelf: 'center',
-  },
-  title: {fontSize: widthInDp(5), fontWeight: '500', textAlign: 'center'},
 });

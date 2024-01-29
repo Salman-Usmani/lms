@@ -10,27 +10,10 @@ export const CohortStack = () => {
     <Stack.Navigator
       initialRouteName={'Cohort'}
       screenOptions={{
-        headerStyle: {
-          backgroundColor: COLORS.primary,
-        },
-        headerTitleStyle: {
-          //   fontFamily: roboto,
-        },
-        headerTitleAlign: 'center',
-        headerTintColor: COLORS.white,
-        headerBackTitleVisible: false,
+        headerShown: false,
       }}>
-      <Stack.Screen
-        name="Cohort"
-        component={CohortScreen}
-        options={{headerShown: false}}
-      />
-
-      <Stack.Screen
-        name="Media"
-        component={MediaScreen}
-        options={{headerShown: false}}
-      />
+      <Stack.Screen name="Cohort" component={CohortScreen} />
+      <Stack.Screen name="Media" component={MediaScreen} />
     </Stack.Navigator>
   );
 };

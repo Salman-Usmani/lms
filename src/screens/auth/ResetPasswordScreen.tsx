@@ -83,7 +83,7 @@ const ResetPasswordScreen = ({
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{marginBottom: heightInDp(5)}}>
+        contentContainerStyle={styles.contentContainerStyle}>
         <LogoDesign />
         <View style={styles.inputContainer}>
           <Text style={styles.title}>Verify OTP Code</Text>
@@ -96,14 +96,14 @@ const ResetPasswordScreen = ({
                 message: 'Password must be at least 8 characters',
               },
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({field: {onChange, value}}) => (
               <FloatingTitleTextInputField
                 title="Password"
                 value={value}
                 keyboardType={'default'}
                 isPassword={true}
                 onChange={onChange}
-                errorMsg={errors.password && errors.password.message}
+                errorMsg={errors?.password?.message}
               />
             )}
             name={'password'}
@@ -121,16 +121,14 @@ const ResetPasswordScreen = ({
                 value === watch('password') || 'Passwords do not match',
               // validate:
             }}
-            render={({field: {onChange, onBlur, value}}) => (
+            render={({field: {onChange, value}}) => (
               <FloatingTitleTextInputField
                 title="Confirm Password"
                 value={value}
                 keyboardType={'default'}
                 onChange={onChange}
                 isPassword={true}
-                errorMsg={
-                  errors.confirmPassword && errors.confirmPassword.message
-                }
+                errorMsg={errors?.confirmPassword?.message}
               />
             )}
             name={'confirmPassword'}
@@ -149,19 +147,11 @@ const ResetPasswordScreen = ({
 };
 export default ResetPasswordScreen;
 const styles = StyleSheet.create({
+  contentContainerStyle: {marginBottom: heightInDp(5)},
+
   title: {
     fontSize: heightInDp(5),
-    fontFamily: FONTS.InterRegular,
-  },
-  noAccountStyle: {
-    color: COLORS.darkGray,
-  },
-  register: {
-    color: COLORS.primary,
-  },
-  forgetPass: {
-    color: COLORS.primary,
-    fontSize: widthInDp(5),
+    fontFamily: FONTS.InterSemiBold,
   },
 
   mainContainer: {
@@ -169,42 +159,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: widthInDp(5),
     backgroundColor: COLORS.white,
   },
-  termsContainer: {flexDirection: 'row', paddingHorizontal: widthInDp(2)},
-  forgotText: {
-    textAlign: 'right',
-    paddingHorizontal: widthInDp(5),
-    color: COLORS.black,
-  },
-  registerView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: heightInDp(3),
-  },
-  logoSvg: {
-    alignSelf: 'center',
-  },
+
   inputContainer: {
     width: '100%',
     alignSelf: 'center',
     marginVertical: heightInDp(2.5),
     rowGap: heightInDp(2.5),
   },
-  linkText: {
-    color: COLORS.primary,
-    // borderBottomWidth: 1,
-    borderBottomColor: 'blue',
-  },
-  btnText: {
-    color: COLORS.primary,
-  },
-  textLogo: {
-    marginBottom: heightInDp(3),
-    fontFamily: FONTS.OpenSan,
-    fontSize: heightInDp(7),
-    textAlign: 'center',
-    color: COLORS.primary,
-  },
-  blackText: {color: COLORS.darkGray},
-  btnView: {marginBottom: heightInDp(10)},
-  checkBoxView: {flexDirection: 'row'},
 });

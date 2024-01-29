@@ -8,7 +8,12 @@ import {logo} from '../../assets';
 export const LogoDesign = () => {
   return (
     <View style={styles.logoContainer}>
-      <SvgXml xml={logo} height={heightInDp(15)} style={styles.logoStyle} />
+      <SvgXml
+        xml={logo}
+        height={heightInDp(14)}
+        // width={widthInDp(45)}
+        style={styles.logoStyle}
+      />
       <Text style={styles.labelStyle}>A Psychology Corporation</Text>
     </View>
   );
@@ -18,7 +23,12 @@ const styles = StyleSheet.create({
   logoContainer: {
     marginVertical: heightInDp(2.5),
   },
-  logoStyle: {alignSelf: 'center', marginVertical: heightInDp(2.5)},
+  logoStyle: {
+    alignSelf: 'center',
+    marginVertical: heightInDp(2.5),
+    borderWidth: 1,
+    borderColor: 'black',
+  },
   labelStyle: {
     textAlign: 'center',
     color: COLORS.primary,

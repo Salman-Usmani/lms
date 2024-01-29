@@ -10,13 +10,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useUserContext} from '../context/UserContext';
 
 const SplashScreen = ({navigation}: AuthStackNavigationProp<'Splash'>) => {
-  const {setUser} = useUserContext(); // Access the user data
+  const {setUser, setToken} = useUserContext(); // Access the user data
 
   const handleUserState = async () => {
     const userData = await AsyncStorage.getItem('userData');
-    if (userData) {
+    const token = await AsyncStorage.getItem('accessToken');
+    if (userData && token) {
       const parseUser = JSON.parse(userData);
+      const accessToken = JSON.parse(token);
       setUser(parseUser);
+      setToken(accessToken);
       navigation.dispatch(
         CommonActions.reset({
           index: 1,

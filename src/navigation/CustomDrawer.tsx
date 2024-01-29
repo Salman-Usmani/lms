@@ -1,37 +1,14 @@
 import React from 'react';
-import {
-  Alert,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgXml} from 'react-native-svg';
 
-import {logo} from '../assets';
-import {heightInDp, widthInDp} from '../utils';
-import {COLORS, FONTS, ICONS} from '../themes';
-import LinearGradient from 'react-native-linear-gradient';
 import {DrawerItemList} from '@react-navigation/drawer';
+import LinearGradient from 'react-native-linear-gradient';
+import {logo} from '../assets';
+import {COLORS, FONTS, ICONS} from '../themes';
+import {heightInDp, widthInDp} from '../utils';
 
 const CustomDrawerContent = (props: any) => {
-  const logout = () => {
-    Alert.alert(
-      '',
-      'Are you sure you want to logout',
-      [
-        {
-          text: 'Yes',
-          onPress: () => {},
-          style: 'default',
-        },
-        {text: 'No'},
-      ],
-      {cancelable: false},
-    );
-  };
-
   return (
     <LinearGradient
       colors={['#F7FCFF', '#E6F5FF', '#123472']}

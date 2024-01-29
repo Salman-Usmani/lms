@@ -10,97 +10,40 @@ import {
 import {COLORS, FONTS} from '../../../../themes';
 import {IGroups} from '../../../../types';
 import {heightInDp, widthInDp} from '../../../../utils';
+import {ImageWithFallbabck} from '../../../../components';
 
 const Item = ({item, onPress}: {item: IGroups; onPress: () => void}) => {
-  const itemsWithImages = item.groupMembers.filter(image =>
-    image.member.hasOwnProperty('avatar'),
-  );
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{
-        flex: 1,
-        flexDirection: 'row',
-        borderWidth: widthInDp(0.3),
-        borderColor: COLORS.lightBlue,
-        borderRadius: widthInDp(3),
-        gap: widthInDp(3),
-        padding: widthInDp(3),
-        // backgroundColor: COLORS.white,
-      }}>
-      <Image
-        source={{uri: item.avatar}}
-        // height={widthInDp(23)}
-        // width={widthInDp(25)}
-        style={{
-          borderRadius: widthInDp(3),
-          borderWidth: 1,
-          height: widthInDp(23),
-          width: widthInDp(25),
-        }}
-      />
-      <View style={{flex: 1}}>
-        <Text
-          numberOfLines={1}
-          style={{
-            fontFamily: FONTS.InterRegular,
-            fontSize: widthInDp(4),
-            color: COLORS.black,
-            fontWeight: '700',
-          }}>
+    <TouchableOpacity onPress={onPress} style={styles.itemContainer}>
+      <Image source={{uri: item.avatar}} style={styles.groupAvatar} />
+      <View style={styles.flex}>
+        <Text numberOfLines={1} style={styles.groupName}>
           {item.name}
         </Text>
-        <Text
-          numberOfLines={2}
-          style={{
-            fontFamily: FONTS.InterRegular,
-            fontSize: widthInDp(4),
-            color: COLORS.black,
-          }}>
+        <Text numberOfLines={2} style={styles.groupDescription}>
           {item.description}
         </Text>
 
-        <View style={{flexDirection: 'row'}}>
-          {itemsWithImages.slice(0, 3).map(
+        <View style={styles.groupMembersView}>
+          {item.groupMembers.slice(0, 3).map(
             (member, index) =>
               member.member?.avatar && (
                 <View
                   key={member._id}
                   style={{
-                    borderRadius: widthInDp(5),
+                    ...styles.memberImgView,
                     right: index * widthInDp(2),
-                    padding: index === 0 ? undefined : widthInDp(1),
-                    borderColor: COLORS.white,
-                    borderWidth: widthInDp(2),
-                    width: widthInDp(7),
-                    height: widthInDp(7),
-                    justifyContent: 'center',
-                    alignItems: 'center',
                   }}>
-                  <Image
-                    source={{uri: member.member.avatar}}
-                    height={widthInDp(5)}
-                    width={widthInDp(5)}
-                    resizeMode="contain"
-                    style={{borderRadius: widthInDp(5), borderWidth: 1}}
+                  <ImageWithFallbabck
+                    source={member.member.avatar}
+                    name={member.member.name}
+                    diameter={widthInDp(5)}
                   />
                 </View>
               ),
           )}
-          <View
-            style={{
-              borderRadius: widthInDp(5),
-              borderWidth: widthInDp(0.3),
-              borderColor: COLORS.lightBlue,
-              borderStyle: 'dashed',
-              width: widthInDp(7),
-              height: widthInDp(7),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text style={{fontSize: widthInDp(3)}}>
-              +{item.groupMembers.length}
-            </Text>
+          <View style={styles.memberCountView}>
+            <Text style={styles.memberCount}>+{item.groupMembers.length}</Text>
           </View>
         </View>
       </View>
@@ -109,7 +52,7 @@ const Item = ({item, onPress}: {item: IGroups; onPress: () => void}) => {
 };
 const Separator = () => <View style={styles.separator} />;
 const ListEmptyComponent = () => (
-  <View style={styles.mainContainer}>
+  <View style={styles.flex}>
     <Text>No group found</Text>
   </View>
 );
@@ -126,21 +69,13 @@ export const Groups = ({
 
   return (
     <View style={styles.container}>
-      <Text
-        style={{
-          fontFamily: FONTS.InterRegular,
-          fontSize: widthInDp(5),
-          color: COLORS.primary,
-          fontWeight: '700',
-        }}>
-        Groups
-      </Text>
+      <Text style={styles.heading}>Groups</Text>
       <FlatList
         scrollEnabled={false}
         data={groups}
         renderItem={renderItem}
         keyExtractor={Item => Item._id}
-        style={{gap: widthInDp(5)}}
+        style={styles.listStyle}
         ItemSeparatorComponent={Separator}
         ListEmptyComponent={ListEmptyComponent}
       />
@@ -149,7 +84,7 @@ export const Groups = ({
 };
 
 const styles = StyleSheet.create({
-  mainContainer: {
+  flex: {
     flex: 1,
   },
   container: {
@@ -160,9 +95,62 @@ const styles = StyleSheet.create({
     gap: widthInDp(5),
     padding: widthInDp(3),
   },
-  separator: {
-    height: heightInDp(1), // Adjust the height of the separator as needed
-    // backgroundColor: COLORS.lightGray, // Separator color
-    // marginHorizontal: widthInDp(3),
+  heading: {
+    fontFamily: FONTS.InterRegular,
+    fontSize: widthInDp(5),
+    color: COLORS.primary,
+    fontWeight: '700',
   },
+  listStyle: {gap: widthInDp(5)},
+  separator: {
+    height: heightInDp(1),
+  },
+  itemContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    borderWidth: widthInDp(0.3),
+    borderColor: COLORS.lightBlue,
+    borderRadius: widthInDp(3),
+    gap: widthInDp(3),
+    padding: widthInDp(3),
+  },
+  groupAvatar: {
+    borderRadius: widthInDp(3),
+    borderWidth: 1,
+    height: widthInDp(23),
+    width: widthInDp(25),
+  },
+  groupName: {
+    fontFamily: FONTS.InterRegular,
+    fontSize: widthInDp(4),
+    color: COLORS.black,
+    fontWeight: '700',
+  },
+  groupDescription: {
+    fontFamily: FONTS.InterRegular,
+    fontSize: widthInDp(4),
+    color: COLORS.black,
+  },
+  groupMembersView: {flexDirection: 'row'},
+  memberImgView: {
+    borderRadius: widthInDp(5),
+    borderColor: COLORS.white,
+    borderWidth: widthInDp(1),
+    width: widthInDp(7),
+    height: widthInDp(7),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  memberImg: {borderRadius: widthInDp(5), borderWidth: 1},
+  memberCountView: {
+    borderRadius: widthInDp(5),
+    borderWidth: widthInDp(0.3),
+    borderColor: COLORS.lightBlue,
+    borderStyle: 'dashed',
+    width: widthInDp(7),
+    height: widthInDp(7),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  memberCount: {fontSize: widthInDp(3)},
 });

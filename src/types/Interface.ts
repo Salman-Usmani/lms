@@ -87,7 +87,7 @@ export interface ILikes {
 }
 
 export interface IGroupPost {
-  url: any;
+  url: string;
   _id: string;
   title: string;
   content: string;
@@ -167,7 +167,6 @@ export interface IGroups {
     state: string;
   };
   groupMembers: [IGroupMember];
-  // groupPosts: [IGroupPost];
   createdAt: Date;
   updatedAt: string;
 }

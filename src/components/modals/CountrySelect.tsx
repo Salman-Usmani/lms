@@ -2,19 +2,19 @@ import React, {useState} from 'react';
 import {COUNTRIES} from '../../constants';
 
 import {
+  FlatList,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Modal,
-  StyleSheet,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
-import {ICountryCode, ICountrySelect} from '../../types';
 import {COLORS, FONTS} from '../../themes';
+import {ICountryCode, ICountrySelect} from '../../types';
 import {heightInDp, widthInDp} from '../../utils';
-import {FloatingTitleTextInputField} from '../atoms/FloatingInput';
+import {SearchInput} from '../atoms/SearchInput';
 
 export const CountrySelect = (props: ICountrySelect) => {
   const {showModal, setShowModal, setSelectedCountry} = props;
@@ -49,12 +49,7 @@ export const CountrySelect = (props: ICountrySelect) => {
         style={styles.mainContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.container}>
-          <FloatingTitleTextInputField
-            title="Search"
-            value={searchText}
-            keyboardType={'default'}
-            onChange={handleSearch}
-          />
+          <SearchInput onChange={handleSearch} value={searchText} />
 
           <FlatList
             data={statesList}
@@ -89,8 +84,8 @@ const styles = StyleSheet.create({
     padding: widthInDp(5),
     position: 'absolute',
     top: heightInDp(15),
+    rowGap: heightInDp(1.5),
   },
   btnContainer: {marginVertical: heightInDp(1), flexDirection: 'row'},
   btnText: {color: COLORS.black, fontFamily: FONTS.InterRegular},
-  dividerLine: {height: heightInDp(0.1), backgroundColor: 'lightgrey'},
 });

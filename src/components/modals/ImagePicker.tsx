@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
   },
   txt1: {
     fontSize: widthInDp(5),
-    // textTransform: 'uppercase',
     color: COLORS.primary,
     textAlign: 'center',
     textAlignVertical: 'center',

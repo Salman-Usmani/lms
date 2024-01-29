@@ -158,12 +158,7 @@ const styles = StyleSheet.create({
     paddingVertical: heightInDp(1),
     justifyContent: 'space-between',
     alignItems: 'center',
-    // borderRadius: widthInDp(2),
   },
-  titleView: {
-    flexDirection: 'row',
-    gap: widthInDp(5),
-    flex: 1,
-  },
+
   title: {color: COLORS.black, flex: 1, fontFamily: FONTS.InterRegular},
 });

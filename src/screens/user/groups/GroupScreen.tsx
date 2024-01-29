@@ -8,30 +8,6 @@ import {widthInDp} from '../../../utils';
 import {Groups} from './screenComponents/groups';
 import {GroupStackNavigagtionProps, IGroups} from '../../../types';
 
-// interface IGroups {
-//   _id: string;
-//   name: string;
-//   avatar: string;
-//   description: string;
-//   groupMembers: [
-//     {
-//       member: {
-//         _id: string;
-//         name: string;
-//         email: string;
-//         phoneNo: string;
-//         role: string;
-//         avatar: string;
-//         country: string;
-//         state: string;
-//       };
-//       canPost: boolean;
-//       canComment: boolean;
-//       _id: string;
-//     },
-//   ];
-// }
-
 const GroupScreen = ({
   navigation,
 }: GroupStackNavigagtionProps<'GroupScreen'>) => {
@@ -78,23 +54,8 @@ const GroupScreen = ({
   }
   return (
     <ScrollView contentContainerStyle={styles.mainContainer}>
-      <Text
-        style={{
-          fontFamily: FONTS.InterRegular,
-          fontSize: widthInDp(5),
-          color: COLORS.primary,
-          fontWeight: '700',
-        }}>
-        Welcome back, {user?.name}!
-      </Text>
-      <Text
-        style={{
-          fontFamily: FONTS.InterRegular,
-          fontSize: widthInDp(3),
-          color: COLORS.primary,
-        }}>
-        Group
-      </Text>
+      <Text style={styles.heading}>Welcome back, {user?.name}!</Text>
+      <Text style={styles.subHeading}>Group</Text>
       <Groups
         groups={groups || []}
         onPress={(item: IGroups) =>
@@ -110,17 +71,19 @@ export default GroupScreen;
 const styles = StyleSheet.create({
   indicatorStyle: {flex: 1, backgroundColor: COLORS.white},
   mainContainer: {
-    // flex: 1,
     paddingHorizontal: widthInDp(3),
     backgroundColor: COLORS.white,
     gap: widthInDp(2),
   },
-  container: {
-    flex: 1,
-    borderWidth: widthInDp(0.5),
-    borderColor: COLORS.lightBlue,
-    borderRadius: widthInDp(5),
-    gap: widthInDp(5),
-    padding: widthInDp(3),
+  heading: {
+    fontFamily: FONTS.InterRegular,
+    fontSize: widthInDp(5),
+    color: COLORS.primary,
+    fontWeight: '700',
+  },
+  subHeading: {
+    fontFamily: FONTS.InterRegular,
+    fontSize: widthInDp(5),
+    color: COLORS.primary,
   },
 });

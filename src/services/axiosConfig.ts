@@ -1,19 +1,15 @@
-import axios, {
-  AxiosRequestConfig,
-  AxiosResponse,
-  AxiosError,
-  InternalAxiosRequestConfig,
-} from 'axios';
-// import {PROD_URL} from '../constatants/appConstants';
-import Config from 'react-native-config';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import {
   CommonActions,
   createNavigationContainerRef,
 } from '@react-navigation/native';
-import NetInfo from '@react-native-community/netinfo';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
+import Config from 'react-native-config';
 
 export const navigationRef = createNavigationContainerRef();
 
@@ -74,6 +70,7 @@ dataServer.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
+    console.log('error.response', error.message);
     if (error.response?.status === 401) {
       navigate();
     }

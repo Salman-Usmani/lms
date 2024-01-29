@@ -1,26 +1,29 @@
+import React, {useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
 import {
   Image,
+  Modal,
   StyleSheet,
   Text,
-  //   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Modal} from 'react-native';
-import {heightInDp, pickImage, toastConfig, widthInDp} from '../../../../utils';
-import {COLORS, FONTS, ICONS} from '../../../../themes';
-import {Button, FloatingTitleTextInputField} from '../../../../components';
+import DocumentPicker from 'react-native-document-picker';
 import {TextInput} from 'react-native-paper';
 import {SvgXml} from 'react-native-svg';
-import {videoUploadIcon} from '../../../../assets';
-import DocumentPicker from 'react-native-document-picker';
-import {dataServer} from '../../../../services/axiosConfig';
 import Toast from 'react-native-toast-message';
-import {Controller, useForm} from 'react-hook-form';
-import {IGroupPost} from '../../../../types';
 import VideoPlayer from 'react-native-video-controls';
 import EmojiPicker, {EmojiType} from 'rn-emoji-keyboard';
+import {videoUploadIcon} from '../../../../assets';
+import {
+  Button,
+  FloatingTitleTextInputField,
+  ImageWithFallbabck,
+} from '../../../../components';
+import {dataServer} from '../../../../services/axiosConfig';
+import {COLORS, FONTS, ICONS} from '../../../../themes';
+import {IGroupPost} from '../../../../types';
+import {heightInDp, pickImage, toastConfig, widthInDp} from '../../../../utils';
 
 type TgroupPost = {
   content: string;
@@ -28,6 +31,14 @@ type TgroupPost = {
   mediaId?: string;
   title: string;
 };
+interface IPostModal {
+  visible: boolean;
+  onRequestClose: () => void;
+  setGroupPosts: (item: IGroupPost) => void;
+  avatar?: string;
+  name?: string;
+  groupId: string;
+}
 
 export const CreatePostModal = ({
   visible,
@@ -36,14 +47,7 @@ export const CreatePostModal = ({
   name,
   groupId,
   setGroupPosts,
-}: {
-  visible: boolean;
-  onRequestClose: () => void;
-  setGroupPosts: (item: IGroupPost) => void;
-  avatar?: string;
-  name?: string;
-  groupId: string;
-}) => {
+}: IPostModal) => {
   const [postMedia, setPostMedia] = useState<
     | {
         uri: string | undefined | null;
@@ -70,10 +74,6 @@ export const CreatePostModal = ({
       groupId,
     },
   });
-  // useEffect(() => {
-  //   console.log(groupId);
-  //   setValue('groupId', groupId);
-  // }, [groupId]);
 
   async function onCreatePost(data: TgroupPost) {
     try {
@@ -191,18 +191,16 @@ export const CreatePostModal = ({
             </TouchableOpacity>
           </View>
           <View style={styles.userView}>
-            <Image source={{uri: avatar}} style={styles.avatar} />
+            <ImageWithFallbabck
+              source={avatar}
+              name={name || ''}
+              diameter={widthInDp(13)}
+            />
             <Text style={styles.userName}>{name}</Text>
           </View>
           <View>
-            <Text
-              style={{
-                fontSize: widthInDp(5),
-                fontWeight: '500',
-                color: COLORS.black,
-                marginBottom: heightInDp(1),
-              }}>
-              Add post title <Text style={{color: COLORS.error}}>*</Text>
+            <Text style={styles.addTitle}>
+              Add post title <Text style={styles.titleImportance}>*</Text>
             </Text>
 
             <Controller
@@ -216,20 +214,11 @@ export const CreatePostModal = ({
                   value={value}
                   keyboardType={'default'}
                   onChange={onChange}
-                  errorMsg={errors.title && errors.title.message}
+                  errorMsg={errors?.title?.message}
                 />
               )}
               name={'title'}
             />
-            {/* <FloatingTitleTextInputField
-              title="Text"
-              value={postTitle}
-              keyboardType={'default'}
-              onChange={text => {
-                setPostTitle(text);
-              }}
-              errorMsg={''}
-            /> */}
 
             <Controller
               control={control}
@@ -243,23 +232,17 @@ export const CreatePostModal = ({
                 <>
                   <View
                     style={{
-                      // flex: 1,
-                      height: heightInDp(15),
-                      borderWidth: 0.5,
+                      ...styles.inputContainer,
                       borderColor: errors.content?.message
                         ? COLORS.error
                         : COLORS.darkGray,
-                      borderRadius: widthInDp(2),
-                      marginTop: heightInDp(2),
-                      rowGap: heightInDp(1),
                     }}>
                     <TextInput
                       multiline
                       label={'Post Description'}
                       value={value}
                       onChangeText={onChange}
-                      underlineStyle={{height: 0}}
-                      contentStyle={{padding: 0, textAlignVertical: 'top'}}
+                      underlineStyle={styles.underlineStyle}
                       error={errors.content?.message ? true : false}
                       theme={{
                         colors: {
@@ -268,37 +251,15 @@ export const CreatePostModal = ({
                           secondary: COLORS.secondary,
                         },
                       }}
-                      style={{
-                        flex: 1,
-                        textAlignVertical: 'top',
-                        backgroundColor: COLORS.white,
-                        padding: 0,
-                        //   borderWidth: 0.5,
-                        fontFamily: FONTS.InterRegular,
-                        borderColor: errors.content?.message
-                          ? COLORS.error
-                          : undefined,
-                        borderRadius: widthInDp(2),
-                        borderTopLeftRadius: widthInDp(2),
-                        borderTopRightRadius: widthInDp(2),
-                      }}
+                      style={styles.inputStyle}
                     />
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignSelf: 'flex-end',
-                        position: 'absolute',
-                        columnGap: widthInDp(3),
-                        bottom: heightInDp(1),
-                        right: widthInDp(1),
-                      }}>
+                    <View style={styles.iconContainer}>
                       <TouchableOpacity
                         onPress={() => {
                           pickImage('GALLERY').then(data => {
                             onMediaSelect(data);
                           });
-                        }}
-                        style={{}}>
+                        }}>
                         <ICONS.FontAwesome5
                           name="images"
                           size={widthInDp(5)}
@@ -310,8 +271,7 @@ export const CreatePostModal = ({
                           pickImage('VIDEO').then(data => {
                             onMediaSelect(data);
                           });
-                        }}
-                        style={{}}>
+                        }}>
                         <SvgXml
                           xml={videoUploadIcon}
                           height={widthInDp(5)}
@@ -329,17 +289,11 @@ export const CreatePostModal = ({
                                 type: result[0].type,
                                 name: result[0].name,
                               });
-                              // setPostMedia({
-                              //   uri: result[0].uri,
-                              //   type: result[0].type,
-                              //   name: result[0].name,
-                              // });
                             })
                             .catch(error => {
                               console.log('sknfa;sfa;k', error);
                             });
-                        }}
-                        style={{}}>
+                        }}>
                         <ICONS.SimpleLineIcons
                           name="paper-clip"
                           size={widthInDp(5)}
@@ -357,12 +311,7 @@ export const CreatePostModal = ({
                     </View>
                   </View>
                   {errors.content?.message && (
-                    <Text
-                      style={{
-                        color: COLORS.error,
-                        marginHorizontal: widthInDp(3),
-                        fontFamily: FONTS.InterRegular,
-                      }}>
+                    <Text style={styles.errorText}>
                       {errors.content?.message}
                     </Text>
                   )}
@@ -372,62 +321,37 @@ export const CreatePostModal = ({
             />
 
             {postMedia?.type?.includes('image') && postMedia.uri ? (
-              <View style={{marginTop: heightInDp(2)}}>
+              <View style={styles.postTypeImage}>
                 <TouchableOpacity
                   onPress={onMediaDelete}
-                  style={{
-                    position: 'absolute',
-                    alignSelf: 'flex-end',
-                    padding: widthInDp(2),
-                    // right: 0,
-                    zIndex: 999,
-                  }}>
+                  style={styles.ImgDelBtn}>
                   <ICONS.AntDesign
                     name="closecircle"
                     size={widthInDp(5)}
                     color={COLORS.white}
                   />
                 </TouchableOpacity>
-                <Image
-                  source={{uri: postMedia.uri}}
-                  style={{
-                    height: heightInDp(20),
-                    width: 'auto',
-                    borderRadius: widthInDp(2),
-                  }}
-                />
+                <Image source={{uri: postMedia.uri}} style={styles.postImage} />
               </View>
             ) : postMedia?.type?.includes('application') ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: widthInDp(3),
-                  marginTop: heightInDp(2),
-                }}>
+              <View style={styles.postTypeDoc}>
                 <ICONS.SimpleLineIcons
                   name="paper-clip"
                   size={widthInDp(5)}
                   color={COLORS.numColor}
                 />
-                <Text style={{color: COLORS.linkColor}}>{postMedia.name}</Text>
+                <Text style={styles.postDoc}>{postMedia.name}</Text>
               </View>
             ) : (
               postMedia?.type?.includes('video') &&
               postMedia.uri && (
-                <View
-                  style={{
-                    height: heightInDp(30),
-                    marginTop: heightInDp(2),
-                    width: 'auto',
-                    borderRadius: widthInDp(3),
-                  }}>
+                <View style={styles.postTypeVideo}>
                   <VideoPlayer
                     tapAnywhereToPause
                     disableBack
                     source={{
                       uri: postMedia?.uri,
                     }}
-                    // navigator={navigation}
                     toggleResizeModeOnFullscreen={true}
                   />
                 </View>
@@ -439,10 +363,7 @@ export const CreatePostModal = ({
             background={true}
             loading={isLoading}
             handlePress={handleSubmit(onCreatePost)}
-            containerStyle={{
-              borderRadius: widthInDp(2),
-              marginTop: heightInDp(2),
-            }}
+            containerStyle={styles.postBtn}
           />
         </View>
       </View>
@@ -462,15 +383,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  addTitle: {
+    fontSize: widthInDp(5),
+    fontWeight: '500',
+    color: COLORS.black,
+    marginBottom: heightInDp(1),
+  },
+  titleImportance: {color: COLORS.error},
   container: {
     alignSelf: 'center',
     width: widthInDp(90),
-    // height: heightInDp(70),
     backgroundColor: COLORS.white,
     borderRadius: widthInDp(2),
     padding: widthInDp(5),
-    // position: 'absolute',
-    // top: heightInDp(15),
   },
   header: {
     flexDirection: 'row',
@@ -499,15 +424,71 @@ const styles = StyleSheet.create({
     marginVertical: widthInDp(3),
     alignItems: 'center',
   },
-  avatar: {
-    height: widthInDp(15),
-    width: widthInDp(15),
-    borderRadius: widthInDp(15),
-  },
+
   userName: {
     color: COLORS.textHighlight,
     fontWeight: '600',
     fontSize: widthInDp(4),
     marginLeft: widthInDp(3),
+  },
+  inputContainer: {
+    height: heightInDp(15),
+    borderWidth: 0.5,
+    borderRadius: widthInDp(2),
+    marginTop: heightInDp(2),
+    rowGap: heightInDp(1),
+  },
+  underlineStyle: {height: 0},
+  inputStyle: {
+    flex: 1,
+    textAlignVertical: 'top',
+    backgroundColor: COLORS.white,
+    padding: 0,
+    fontFamily: FONTS.InterRegular,
+    borderRadius: widthInDp(2),
+    borderTopLeftRadius: widthInDp(2),
+    borderTopRightRadius: widthInDp(2),
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    columnGap: widthInDp(3),
+    bottom: heightInDp(1),
+    right: widthInDp(1),
+  },
+
+  errorText: {
+    color: COLORS.error,
+    marginHorizontal: widthInDp(3),
+    fontFamily: FONTS.InterRegular,
+  },
+  postTypeImage: {marginTop: heightInDp(2)},
+  postTypeDoc: {
+    flexDirection: 'row',
+    gap: widthInDp(3),
+    marginTop: heightInDp(2),
+  },
+  postTypeVideo: {
+    height: heightInDp(30),
+    marginTop: heightInDp(2),
+    width: 'auto',
+    borderRadius: widthInDp(3),
+  },
+  ImgDelBtn: {
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    padding: widthInDp(2),
+    zIndex: 999,
+  },
+  postImage: {
+    height: heightInDp(20),
+    width: 'auto',
+    borderRadius: widthInDp(2),
+  },
+  postDoc: {color: COLORS.linkColor},
+  postBtn: {
+    borderRadius: widthInDp(2),
+    marginTop: heightInDp(2),
   },
 });

@@ -18,4 +18,6 @@ export type {
   GroupStackScreensList,
   RootStackNavigationProp,
   RootStackScreensList,
+  ChatStackNavigagtionProps,
+  ChatStackScreensList,
 } from './NavigationTypes';

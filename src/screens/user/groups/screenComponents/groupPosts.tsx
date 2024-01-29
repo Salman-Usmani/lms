@@ -20,6 +20,7 @@ import {heightInDp, widthInDp} from '../../../../utils';
 import {PostsComments} from './postsComments';
 import RNFS from 'react-native-fs';
 import ReactNativeBlobUtil from 'react-native-blob-util';
+import {ImageWithFallbabck} from '../../../../components';
 
 export const GroupPosts = ({
   groupPosts,
@@ -223,12 +224,18 @@ export const GroupPosts = ({
       initialNumToRender={50}
       renderItem={renderItem}
       keyExtractor={Item => Item._id}
-      style={{gap: widthInDp(5)}}
+      style={styles.listStyle}
       ItemSeparatorComponent={Separator}
+      ListEmptyComponent={ListEmptyComponent}
     />
   );
 };
 
+const ListEmptyComponent = () => (
+  <View style={styles.flex}>
+    <Text>No Posts found</Text>
+  </View>
+);
 const Item = ({
   item,
   onPress,
@@ -255,59 +262,19 @@ const Item = ({
   return (
     <>
       <View style={styles.container}>
-        <View style={{flex: 1, flexDirection: 'row'}}>
-          {item.postCreator.avatar ? (
-            <Image
-              source={{uri: item.postCreator.avatar}}
-              style={{
-                height: widthInDp(10),
-                width: widthInDp(10),
-                borderRadius: widthInDp(10),
-              }}
-            />
-          ) : (
-            <View
-              style={{
-                backgroundColor: COLORS.lightGray,
-                borderRadius: widthInDp(100),
-                width: widthInDp(10),
-                height: widthInDp(10),
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <ICONS.FontAwesome6
-                name="user-large"
-                size={widthInDp(6)}
-                color={COLORS.white}
-              />
-            </View>
-          )}
+        <View style={styles.postCreatorView}>
+          <ImageWithFallbabck
+            source={item.postCreator.avatar}
+            name={item.postCreator.name}
+            diameter={widthInDp(10)}
+          />
 
-          <View
-            style={{
-              flex: 1,
-              marginLeft: widthInDp(3),
-              justifyContent: 'space-around',
-            }}>
-            <Text
-              style={{
-                color: COLORS.textPrimary,
-                fontWeight: '500',
-                fontSize: widthInDp(4),
-              }}>
-              {item.title}
-            </Text>
+          <View style={styles.postHeaderView}>
+            <Text style={styles.postTitle}>{item.title}</Text>
 
-            <Text
-              style={{
-                color: COLORS.textSecondary,
-                fontWeight: '500',
-                fontSize: widthInDp(4),
-              }}>
-              <Text style={{color: COLORS.textHighlight, fontWeight: '600'}}>
-                {item.postCreator.name}
-              </Text>
-              , {moment(item.createdAt).fromNow()}
+            <Text style={styles.postTime}>
+              <Text style={styles.postCreator}>{item.postCreator.name}</Text>,{' '}
+              {moment(item.createdAt).fromNow()}
             </Text>
           </View>
           <ICONS.FontAwesome6
@@ -321,13 +288,7 @@ const Item = ({
           <Image
             source={{uri: item?.media.s3PublicUrl}}
             height={heightInDp(20)}
-            style={{width: 'auto', borderRadius: widthInDp(2)}}
-            defaultSource={require('../../../../assets/images/images.jpeg')}
-            onError={() => {
-              return {
-                uri: 'https://www.pakainfo.com/wp-content/uploads/2021/09/image-url-for-testing.jpg',
-              };
-            }}
+            style={styles.postImage}
           />
         ) : item.media?.mimetype.includes('application') ? (
           <TouchableOpacity
@@ -337,18 +298,13 @@ const Item = ({
                 item.media?.originalName || '',
               )
             }
-            style={{flexDirection: 'row', gap: widthInDp(2)}}>
+            style={styles.postDoc}>
             <ICONS.MaterialCommunityIcons name="download" size={widthInDp(5)} />
             <Text>{item.media.originalName}</Text>
           </TouchableOpacity>
         ) : (
           item.media?.mimetype.includes('video') && (
-            <View
-              style={{
-                height: heightInDp(30),
-                width: 'auto',
-                borderRadius: widthInDp(3),
-              }}>
+            <View style={styles.postVideo}>
               <VideoPlayer
                 tapAnywhereToPause
                 disableBack
@@ -362,14 +318,8 @@ const Item = ({
           )
         )}
 
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', gap: widthInDp(1)}}>
+        <View style={styles.postActionsView}>
+          <View style={styles.postActionInnerView}>
             <TouchableOpacity
               disabled={isLikeLoading}
               onPress={onPressThumbsUp}>
@@ -379,14 +329,7 @@ const Item = ({
                 color={COLORS.textSecondary}
               />
             </TouchableOpacity>
-            <Text
-              style={{
-                color: COLORS.textSecondary,
-                fontSize: widthInDp(5),
-                marginRight: widthInDp(5),
-              }}>
-              {item.likes.length}
-            </Text>
+            <Text style={styles.postActsLength}>{item.likes.length}</Text>
 
             <TouchableOpacity
               onPress={() => setCommentsVisible(!commentsVisible)}>
@@ -396,87 +339,48 @@ const Item = ({
                 color={COLORS.textSecondary}
               />
             </TouchableOpacity>
-            <Text style={{color: COLORS.textSecondary, fontSize: widthInDp(5)}}>
-              {item.comments.length}
-            </Text>
+            <Text style={styles.postActsLength}>{item.comments.length}</Text>
           </View>
-          <View style={{flexDirection: 'row', gap: widthInDp(1)}}>
-            {item?.comments.length > 0 && (
-              <TouchableOpacity
-                style={{flexDirection: 'row'}}
-                onPress={() => setCommentsVisible(!commentsVisible)}>
-                {commentsVisible ? (
-                  <>
-                    <Text style={{color: COLORS.textSecondary}}>
-                      hide Replies
-                    </Text>
-                    <ICONS.MaterialIcons
-                      name="keyboard-arrow-down"
-                      color={COLORS.textSecondary}
-                      size={widthInDp(5)}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Text style={{color: COLORS.textSecondary}}>
-                      View Replies
-                    </Text>
-
-                    <ICONS.MaterialIcons
-                      name="keyboard-arrow-up"
-                      color={COLORS.textSecondary}
-                      size={widthInDp(5)}
-                    />
-                  </>
-                )}
-              </TouchableOpacity>
-            )}
-          </View>
+          {item?.comments.length > 0 && (
+            <TouchableOpacity
+              style={styles.postActionInnerView}
+              onPress={() => setCommentsVisible(!commentsVisible)}>
+              {commentsVisible ? (
+                <>
+                  <Text style={styles.postReplies}>Hide Replies</Text>
+                  <ICONS.MaterialIcons
+                    name="keyboard-arrow-down"
+                    color={COLORS.textSecondary}
+                    size={widthInDp(5)}
+                  />
+                </>
+              ) : (
+                <>
+                  <Text style={styles.postReplies}>View Replies</Text>
+                  <ICONS.MaterialIcons
+                    name="keyboard-arrow-up"
+                    color={COLORS.textSecondary}
+                    size={widthInDp(5)}
+                  />
+                </>
+              )}
+            </TouchableOpacity>
+          )}
         </View>
       </View>
-      <View
-        style={{
-          flex: 1,
-          height: heightInDp(15),
-          borderWidth: 0.5,
-          borderColor: COLORS.darkGray,
-          borderRadius: widthInDp(1),
-          // gap: widthInDp(3),
-          paddingHorizontal: widthInDp(1),
-          paddingVertical: heightInDp(1),
-          marginVertical: heightInDp(2),
-          rowGap: heightInDp(1),
-          shadowColor: COLORS.black,
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-
-          elevation: 5,
-          backgroundColor: COLORS.white,
-          // flexDirection: 'row',
-        }}>
+      <View style={styles.replyContainer}>
         <TextInput
           ref={inputRef}
           placeholder="Write a comment here..."
           onChangeText={text => setComment(text)}
           multiline
-          style={{
-            flex: 1,
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            padding: 0,
-            paddingHorizontal: widthInDp(1),
-            textAlignVertical: 'top',
-          }}
+          style={styles.postReply}
         />
         <TouchableOpacity
           onPress={() => {
             onPress(comment);
           }}
-          style={{alignSelf: 'flex-end'}}>
+          style={styles.postReplyBtn}>
           {isLoading ? (
             <ActivityIndicator size={'small'} color={COLORS.numColor} />
           ) : (
@@ -501,13 +405,8 @@ const Item = ({
 const Separator = () => <View style={styles.separator} />;
 
 const styles = StyleSheet.create({
-  indicatorStyle: {flex: 1, backgroundColor: COLORS.white},
-  mainContainer: {
-    // flex: 1,
-    paddingHorizontal: widthInDp(3),
-    // backgroundColor: COLORS.white,/
-    // gap: widthInDp(3),
-    rowGap: heightInDp(2),
+  flex: {
+    flex: 1,
   },
   container: {
     flex: 1,
@@ -518,38 +417,72 @@ const styles = StyleSheet.create({
     padding: widthInDp(3),
     backgroundColor: COLORS.white,
   },
-  subTitle: {
-    fontFamily: FONTS.InterRegular,
-    fontSize: widthInDp(3),
-    color: COLORS.primary,
-  },
-  heading: {
-    fontSize: widthInDp(5),
-    fontWeight: '600',
-  },
-  groupImage: {
-    height: heightInDp(25),
-    width: 'auto',
-    borderRadius: widthInDp(1.5),
-  },
-  title: {
-    fontFamily: FONTS.InterRegular,
-    fontSize: widthInDp(5),
-    color: COLORS.primary,
-    fontWeight: '700',
-  },
-
-  separator: {
-    height: heightInDp(1), // Adjust the height of the separator as needed
-    // backgroundColor: COLORS.lightGray, // Separator color
-    // marginHorizontal: widthInDp(3),
-  },
-  backgroundVideo: {
+  separator: {height: heightInDp(1)},
+  listStyle: {gap: widthInDp(5)},
+  postCreatorView: {flex: 1, flexDirection: 'row'},
+  postHeaderView: {
     flex: 1,
-    // position: 'absolute',
-    // top: 0,
-    // left: 0,
-    // bottom: 0,
-    // right: 0,
+    marginLeft: widthInDp(3),
+    justifyContent: 'space-around',
   },
+  postTitle: {
+    color: COLORS.textPrimary,
+    fontWeight: '500',
+    fontSize: widthInDp(4),
+  },
+  postTime: {
+    color: COLORS.textSecondary,
+    fontWeight: '500',
+    fontSize: widthInDp(4),
+  },
+  postCreator: {color: COLORS.textHighlight, fontWeight: '600'},
+  postImage: {width: 'auto', borderRadius: widthInDp(2)},
+  postDoc: {flexDirection: 'row', gap: widthInDp(2)},
+  postVideo: {
+    height: heightInDp(30),
+    width: 'auto',
+    borderRadius: widthInDp(3),
+  },
+  postActionsView: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  postActionInnerView: {flexDirection: 'row', gap: widthInDp(1)},
+  postActsLength: {
+    color: COLORS.textSecondary,
+    fontSize: widthInDp(5),
+    marginRight: widthInDp(5),
+  },
+  postReplies: {color: COLORS.textSecondary},
+  replyContainer: {
+    flex: 1,
+    height: heightInDp(15),
+    borderWidth: 0.5,
+    borderColor: COLORS.darkGray,
+    borderRadius: widthInDp(1),
+    paddingHorizontal: widthInDp(1),
+    paddingVertical: heightInDp(1),
+    marginVertical: heightInDp(2),
+    rowGap: heightInDp(1),
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    backgroundColor: COLORS.white,
+  },
+  postReply: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    padding: 0,
+    paddingHorizontal: widthInDp(1),
+    textAlignVertical: 'top',
+  },
+  postReplyBtn: {alignSelf: 'flex-end'},
 });

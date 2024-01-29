@@ -1,6 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {CommonActions} from '@react-navigation/native';
+import React, {useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
 import {
-  KeyboardAvoidingView,
-  Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,21 +11,17 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import React, {useEffect, useState} from 'react';
 import {
   Button,
-  LogoDesign,
   FloatingTitleTextInputField,
+  LogoDesign,
 } from '../../components';
-import {heightInDp, widthInDp} from '../../utils';
+import {EMAIL_REGEX} from '../../constants';
+import {useUserContext} from '../../context/UserContext';
+import {dataServer} from '../../services/axiosConfig';
 import {COLORS, FONTS, ICONS} from '../../themes';
 import {AuthStackNavigationProp} from '../../types';
-import {dataServer} from '../../services/axiosConfig';
-import {CommonActions} from '@react-navigation/native';
-import {Controller, useForm} from 'react-hook-form';
-import {EMAIL_REGEX} from '../../constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useUserContext} from '../../context/UserContext';
+import {heightInDp, widthInDp} from '../../utils';
 
 type TLoginForm = {
   email: string;
@@ -30,19 +29,20 @@ type TLoginForm = {
 };
 
 const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
-  const {setUser} = useUserContext();
+  const {setUser, setToken} = useUserContext();
   const [isLoading, setLoading] = useState(false);
   const {
     control,
     handleSubmit,
-    setValue,
     formState: {errors},
-  } = useForm<TLoginForm>();
+  } = useForm<TLoginForm>({
+    defaultValues: {
+      email: __DEV__ ? 'info.user.users@gmail.com' : '',
+      // email: __DEV__ ? 'iamosmanraza@gmail.com' : '',
+      password: __DEV__ ? 'Usman@12345' : '',
+    },
+  });
 
-  // useEffect(() => {
-  //   setValue('email', 'iamosmanraza@gmail.com');
-  //   setValue('password', 'Usman@12345');
-  // }, []);
   async function handleSignIn(data: TLoginForm) {
     try {
       setLoading(true);
@@ -57,7 +57,9 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
           'userData',
           JSON.stringify(loginApi.data.data.user),
         );
+        console.log(loginApi.data.data.user);
         setUser(loginApi.data.data.user);
+        setToken(loginApi.data.data.accessToken);
         Toast.show({
           type: 'success',
           text1: loginApi.data.message,
@@ -82,72 +84,72 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
     }
   }
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.mainContainer}>
-      <LogoDesign />
-      <Text style={styles.title}>Login</Text>
-      <Text style={styles.noAccountStyle}>
-        Don't have an account ?{' '}
-        <Text
-          onPress={() => navigation.navigate('SignUp')}
-          style={styles.register}>
-          Register
+    <SafeAreaView style={styles.mainContainer}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <LogoDesign />
+        <Text style={styles.title}>Login</Text>
+        <Text style={styles.noAccountStyle}>
+          Don't have an account ?{' '}
+          <Text
+            onPress={() => navigation.navigate('SignUp')}
+            style={styles.register}>
+            Register
+          </Text>
         </Text>
-      </Text>
 
-      <View style={styles.inputContainer}>
-        <Controller
-          control={control}
-          rules={{
-            required: 'Email is required',
-            pattern: {value: EMAIL_REGEX, message: 'Email is not valid'},
-          }}
-          render={({field: {onChange, value}}) => (
-            <FloatingTitleTextInputField
-              title="Email"
-              value={value}
-              keyboardType={'email-address'}
-              onChange={onChange}
-              errorMsg={errors.email && errors.email.message}
-            />
-          )}
-          name={'email'}
+        <View style={styles.inputContainer}>
+          <Controller
+            control={control}
+            rules={{
+              required: 'Email is required',
+              pattern: {value: EMAIL_REGEX, message: 'Email is not valid'},
+            }}
+            render={({field: {onChange, value}}) => (
+              <FloatingTitleTextInputField
+                title="Email"
+                value={value}
+                keyboardType={'email-address'}
+                onChange={onChange}
+                errorMsg={errors?.email?.message}
+              />
+            )}
+            name={'email'}
+          />
+
+          <Controller
+            control={control}
+            rules={{
+              required: 'password is required',
+            }}
+            render={({field: {onChange, value}}) => (
+              <FloatingTitleTextInputField
+                title="Password"
+                value={value}
+                keyboardType={'default'}
+                isPassword={true}
+                onChange={onChange}
+                errorMsg={errors?.password?.message}
+              />
+            )}
+            name={'password'}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.forgetPassView}
+          onPress={() => navigation.navigate('ForgotPassword')}>
+          <Text style={styles.forgetPass}>
+            <ICONS.Feather name="info" size={widthInDp(5)} /> Forgot Password
+          </Text>
+        </TouchableOpacity>
+        <Button
+          title={'Login'}
+          handlePress={handleSubmit(handleSignIn)}
+          background={true}
+          loading={isLoading}
         />
-
-        <Controller
-          control={control}
-          rules={{
-            required: 'password is required',
-          }}
-          render={({field: {onChange, value}}) => (
-            <FloatingTitleTextInputField
-              title="Password"
-              value={value}
-              keyboardType={'default'}
-              isPassword={true}
-              onChange={onChange}
-              errorMsg={errors.password && errors.password.message}
-            />
-          )}
-          name={'password'}
-        />
-      </View>
-
-      <TouchableOpacity
-        style={styles.forgetPassView}
-        onPress={() => navigation.navigate('ForgotPassword')}>
-        <Text style={styles.forgetPass}>
-          <ICONS.Feather name="info" size={widthInDp(5)} /> Forgot Password
-        </Text>
-      </TouchableOpacity>
-      <Button
-        title={'Continue'}
-        handlePress={handleSubmit(handleSignIn)}
-        background={true}
-        loading={isLoading}
-      />
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -155,17 +157,14 @@ export default SignInScreen;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    // flex: 1,
+    flex: 1,
     paddingHorizontal: widthInDp(5),
     backgroundColor: COLORS.white,
   },
-  logoStyle: {
-    alignSelf: 'center',
-    marginVertical: heightInDp(2.5),
-  },
+
   title: {
     fontSize: heightInDp(5),
-    fontFamily: FONTS.InterRegular,
+    fontFamily: FONTS.InterSemiBold,
   },
   noAccountStyle: {
     color: COLORS.darkGray,
@@ -178,12 +177,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     marginVertical: heightInDp(2.5),
-    rowGap: heightInDp(2.5),
+    rowGap: heightInDp(1.5),
   },
-  forgetPassView: {marginVertical: heightInDp(2.5)},
+  forgetPassView: {marginBottom: heightInDp(1.5)},
   forgetPass: {
     color: COLORS.primary,
-    fontSize: widthInDp(5),
+    fontSize: widthInDp(4.5),
     fontFamily: FONTS.InterRegular,
   },
 });

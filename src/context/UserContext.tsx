@@ -4,6 +4,8 @@ import {UserData} from '../types';
 interface UserContextType {
   user: UserData | null;
   setUser: (user: UserData | null) => void;
+  token: string | null;
+  setToken: (token: string | null) => void;
 }
 interface UserProviderProps {
   children: ReactNode;
@@ -12,6 +14,8 @@ interface UserProviderProps {
 export const UserContext = createContext<UserContextType>({
   user: null,
   setUser: () => null,
+  token: null,
+  setToken: () => null,
 });
 
 export const useUserContext = () => {
@@ -24,9 +28,9 @@ export const useUserContext = () => {
 
 export const UserProvider = ({children}: UserProviderProps) => {
   const [user, setUser] = useState<UserData | null>(null);
-
+  const [token, setToken] = useState<string | null>(null);
   return (
-    <UserContext.Provider value={{user, setUser}}>
+    <UserContext.Provider value={{user, token, setToken, setUser}}>
       {children}
     </UserContext.Provider>
   );

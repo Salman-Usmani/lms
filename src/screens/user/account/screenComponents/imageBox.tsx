@@ -18,7 +18,11 @@ export const ImageBox = ({name, avatar, setUpdatedUser}: IImageBox) => {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  async function updateAvatar(data: any) {
+  async function updateAvatar(data: {
+    uri: string | undefined;
+    type: string | undefined;
+    name: string | undefined;
+  }) {
     try {
       setLoading(true);
       let imageData = new FormData();
@@ -39,6 +43,7 @@ export const ImageBox = ({name, avatar, setUpdatedUser}: IImageBox) => {
       }
     } catch (error: any) {
       setLoading(false);
+      console.log('error.response.data', error.response.data);
       Toast.show({
         type: 'error',
         text1: Array.isArray(error?.response?.data?.errors)

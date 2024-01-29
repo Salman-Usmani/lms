@@ -3,6 +3,8 @@ import {Controller, useForm} from 'react-hook-form';
 import {
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -59,47 +61,49 @@ const ForgotPasswordScreen = ({
     }
   }
   return (
-    <KeyboardAvoidingView
-      style={styles.mainContainer}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <LogoDesign />
-      <View style={styles.innerContainer}>
-        <Text style={styles.title}>Forgot Password</Text>
-        <Text style={styles.noAccountStyle}>
-          Don't have an account ?{' '}
-          <Text
-            onPress={() => navigation.navigate('SignUp')}
-            style={styles.register}>
-            Register
+    <SafeAreaView style={styles.mainContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainerStyle}>
+        <LogoDesign />
+        <View style={styles.innerContainer}>
+          <Text style={styles.title}>Forgot Password</Text>
+          <Text style={styles.noAccountStyle}>
+            Don't have an account ?{' '}
+            <Text
+              onPress={() => navigation.navigate('SignUp')}
+              style={styles.register}>
+              Register
+            </Text>
           </Text>
-        </Text>
-        <View style={styles.inputContainer}>
-          <Controller
-            control={control}
-            rules={{
-              required: 'Email is required',
-              pattern: {value: EMAIL_REGEX, message: 'Email is not valid'},
-            }}
-            render={({field: {onChange, onBlur, value}}) => (
-              <FloatingTitleTextInputField
-                title="Email"
-                value={value}
-                keyboardType={'email-address'}
-                onChange={onChange}
-                errorMsg={errors.email && errors.email.message}
-              />
-            )}
-            name={'email'}
+          <View style={styles.inputContainer}>
+            <Controller
+              control={control}
+              rules={{
+                required: 'Email is required',
+                pattern: {value: EMAIL_REGEX, message: 'Email is not valid'},
+              }}
+              render={({field: {onChange, value}}) => (
+                <FloatingTitleTextInputField
+                  title="Email"
+                  value={value}
+                  keyboardType={'email-address'}
+                  onChange={onChange}
+                  errorMsg={errors?.email?.message}
+                />
+              )}
+              name={'email'}
+            />
+          </View>
+          <Button
+            title={'Continue'}
+            handlePress={handleSubmit(handleForgotPassword)}
+            background={true}
+            loading={isLoading}
           />
         </View>
-        <Button
-          title={'Continue'}
-          handlePress={handleSubmit(handleForgotPassword)}
-          background={true}
-          loading={isLoading}
-        />
-      </View>
-    </KeyboardAvoidingView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -111,19 +115,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: widthInDp(5),
     backgroundColor: COLORS.white,
   },
+  contentContainerStyle: {flex: 1},
   innerContainer: {flex: 1, justifyContent: 'center'},
+  title: {fontSize: heightInDp(5), fontFamily: FONTS.InterSemiBold},
+  noAccountStyle: {color: COLORS.darkGray, fontFamily: FONTS.InterRegular},
+  register: {color: COLORS.primary},
 
-  title: {
-    fontSize: heightInDp(5),
-    fontFamily: FONTS.InterRegular,
-  },
-  noAccountStyle: {
-    color: COLORS.darkGray,
-    fontFamily: FONTS.InterRegular,
-  },
-  register: {
-    color: COLORS.primary,
-  },
   inputContainer: {
     width: '100%',
     alignSelf: 'center',

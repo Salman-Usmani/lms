@@ -33,13 +33,7 @@ const Item = ({
   fileType: FileType;
 }) => {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        backgroundColor: COLORS.white,
-        flex: 1,
-        alignItems: 'center',
-      }}>
+    <View style={styles.itemContainer}>
       <TouchableOpacity onPress={onPress} style={styles.fileButtonStyle}>
         <View style={styles.titleView}>
           {fileType === 'pdf' ? (
@@ -70,7 +64,7 @@ const Item = ({
             name="download"
             size={widthInDp(5)}
             color={COLORS.black}
-            style={{margin: widthInDp(2)}}
+            style={styles.downloadIcon}
           />
         </TouchableOpacity>
       )}
@@ -184,9 +178,6 @@ export const Files = ({
 };
 
 const styles = StyleSheet.create({
-  fileContainer: {
-    rowGap: heightInDp(1),
-  },
   fileButtonStyle: {
     flexDirection: 'row',
     padding: widthInDp(2),
@@ -200,4 +191,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {color: COLORS.black, flex: 1, fontFamily: FONTS.InterRegular},
+  itemContainer: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.white,
+    flex: 1,
+    alignItems: 'center',
+  },
+  downloadIcon: {margin: widthInDp(2)},
 });

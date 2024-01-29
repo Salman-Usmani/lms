@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {Divider, Menu, PaperProvider} from 'react-native-paper';
-import {COLORS, ICONS} from '../../themes';
+import {COLORS, FONTS, ICONS} from '../../themes';
 import {heightInDp, widthInDp} from '../../utils';
+import {ImageWithFallbabck} from '../atoms/ImageWithFallbabck';
 
 export const MenuContainer = ({
   uri,
@@ -23,47 +24,40 @@ export const MenuContainer = ({
     <PaperProvider>
       <Menu
         visible={visible}
-        contentStyle={{backgroundColor: COLORS.white, padding: 0, margin: 0}}
+        contentStyle={styles.contentStyle}
         onDismiss={closeMenu}
-        theme={{colors: {primary: 'green', secondary: 'red', text: 'black'}}}
-        style={{
-          width: widthInDp(40),
-          left: -widthInDp(30),
-          top: heightInDp(5),
+        theme={{
+          colors: {
+            primary: COLORS.primary,
+            text: COLORS.black,
+            secondary: COLORS.secondary,
+          },
         }}
+        style={styles.menuStyle}
         anchor={
           <TouchableOpacity onPress={openMenu} style={styles.icon}>
-            {uri ? (
-              <Image
-                source={{uri}}
-                height={widthInDp(10)}
-                width={widthInDp(10)}
-                style={styles.image}
-              />
-            ) : (
-              <ICONS.FontAwesome6
-                name="circle-user"
-                size={widthInDp(5)}
-                color={COLORS.white}
-              />
-            )}
+            <ImageWithFallbabck
+              source={uri}
+              name={name}
+              diameter={widthInDp(10)}
+            />
           </TouchableOpacity>
         }>
         <Menu.Item
           title="Account"
-          titleStyle={{color: COLORS.black}}
-          style={{height: heightInDp(4)}}
+          titleStyle={{...styles.textStyle, fontFamily: FONTS.InterSemiBold}}
+          style={styles.itemStyle}
         />
         <Menu.Item
           title={name}
-          titleStyle={{color: COLORS.black, textAlignVertical: 'center'}}
-          style={{height: heightInDp(5)}}
+          titleStyle={styles.textStyle}
+          style={styles.itemStyle}
         />
         <Divider />
         <Menu.Item
           onPress={handleSignOut}
           title="Sign Out"
-          titleStyle={{color: COLORS.black}}
+          titleStyle={styles.textStyle}
         />
       </Menu>
     </PaperProvider>
@@ -71,12 +65,17 @@ export const MenuContainer = ({
 };
 
 const styles = StyleSheet.create({
+  contentStyle: {backgroundColor: COLORS.white, padding: 0, margin: 0},
+  menuStyle: {width: widthInDp(40), left: -widthInDp(30), top: heightInDp(5)},
   icon: {
     backgroundColor: COLORS.primary,
     borderRadius: widthInDp(10),
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
+    width: widthInDp(10),
+    height: widthInDp(10),
   },
-  image: {flex: 1, borderRadius: widthInDp(10)},
+  itemStyle: {height: heightInDp(4)},
+  textStyle: {color: COLORS.black, fontFamily: FONTS.InterRegular},
 });

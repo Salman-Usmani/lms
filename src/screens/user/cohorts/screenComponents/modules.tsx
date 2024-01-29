@@ -62,12 +62,7 @@ const Item = ({
         )}
       </TouchableOpacity>
       {selectedItem === item._id && (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: COLORS.white,
-            paddingHorizontal: widthInDp(2),
-          }}>
+        <View style={styles.daysContainer}>
           <Days days={item.days || []} />
         </View>
       )}
@@ -120,4 +115,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {color: COLORS.black, flex: 1, fontFamily: FONTS.InterRegular},
+  daysContainer: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+    paddingHorizontal: widthInDp(2),
+  },
 });

@@ -10,32 +10,11 @@ export const GroupStack = () => {
     <Stack.Navigator
       initialRouteName={'GroupScreen'}
       screenOptions={{
-        headerStyle: {
-          backgroundColor: COLORS.primary,
-        },
-        headerTitleStyle: {
-          //   fontFamily: roboto,
-        },
-        headerTitleAlign: 'center',
-        headerTintColor: COLORS.white,
-        headerBackTitleVisible: false,
+        headerShown: false,
       }}>
-      <Stack.Screen
-        name="GroupScreen"
-        component={GroupScreen}
-        options={{headerShown: false}}
-      />
-
-      <Stack.Screen
-        name="GroupDetailsScreen"
-        component={GroupDetailsScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Media"
-        component={MediaScreen}
-        options={{headerShown: false}}
-      />
+      <Stack.Screen name="GroupScreen" component={GroupScreen} />
+      <Stack.Screen name="GroupDetailsScreen" component={GroupDetailsScreen} />
+      <Stack.Screen name="Media" component={MediaScreen} />
     </Stack.Navigator>
   );
 };

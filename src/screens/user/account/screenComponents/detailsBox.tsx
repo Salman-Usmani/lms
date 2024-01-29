@@ -1,14 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text} from 'react-native';
-import {widthInDp} from '../../../../utils';
-import {dataServer} from '../../../../services/axiosConfig';
+import {Controller, useForm} from 'react-hook-form';
+import {StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {Button, FloatingTitleTextInputField} from '../../../../components';
-import {Controller, useForm} from 'react-hook-form';
-import {EMAIL_REGEX} from '../../../../constants';
-import {AxiosError} from 'axios';
+import {dataServer} from '../../../../services/axiosConfig';
 import {UserData} from '../../../../types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {widthInDp} from '../../../../utils';
 
 interface IDetailsBox {
   name: string;
@@ -48,7 +46,7 @@ export const DetailsBox = (props: IProps) => {
     }
   }, [props]);
 
-  async function updateUserDetails(data: any) {
+  async function updateUserDetails(data: IDetailsBox) {
     try {
       setLoading(true);
       const userUpdateApi = await dataServer.put('user', data);
@@ -89,31 +87,26 @@ export const DetailsBox = (props: IProps) => {
             value={value}
             keyboardType={'default'}
             onChange={onChange}
-            errorMsg={errors.name && errors.name.message}
+            errorMsg={errors?.name?.message}
           />
         )}
         name={'name'}
       />
 
-      <FloatingTitleTextInputField
-        title="Email"
-        value={props.email || ''}
-        keyboardType={'email-address'}
-        errorMsg={''}
-      />
+      <FloatingTitleTextInputField title="Email" value={props.email || ''} />
 
       <Controller
         control={control}
         rules={{
           required: 'phone number is required',
         }}
-        render={({field: {onChange, onBlur, value}}) => (
+        render={({field: {onChange, value}}) => (
           <FloatingTitleTextInputField
             title="Phone Number"
             value={value}
             keyboardType={'numeric'}
             onChange={onChange}
-            errorMsg={errors.phoneNo && errors.phoneNo.message}
+            errorMsg={errors?.phoneNo?.message}
           />
         )}
         name={'phoneNo'}
@@ -129,7 +122,7 @@ export const DetailsBox = (props: IProps) => {
             value={value}
             keyboardType={'default'}
             onChange={onChange}
-            errorMsg={errors.state && errors.state.message}
+            errorMsg={errors?.state?.message}
           />
         )}
         name={'state'}
@@ -145,7 +138,7 @@ export const DetailsBox = (props: IProps) => {
             value={value}
             keyboardType={'default'}
             onChange={onChange}
-            errorMsg={errors.country && errors.country.message}
+            errorMsg={errors?.country?.message}
           />
         )}
         name={'country'}
@@ -159,13 +152,3 @@ export const DetailsBox = (props: IProps) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  imageStyle: {
-    width: widthInDp(50),
-    height: widthInDp(50),
-    borderRadius: widthInDp(100),
-    alignSelf: 'center',
-  },
-  title: {fontSize: widthInDp(5), fontWeight: '500', textAlign: 'center'},
-});

@@ -46,12 +46,6 @@ const VerifyOtpScreen = ({
           text1: verifyOtpApi.data.message,
         });
         navigation.navigate('ResetPassword', {email: data.email});
-        // navigation.dispatch(
-        //   CommonActions.reset({
-        //     index: 1,
-        //     routes: [{name: 'SignIn'}],
-        //   }),
-        // );
       }
     } catch (error: any) {
       setLoading(false);
@@ -79,7 +73,7 @@ const VerifyOtpScreen = ({
       style={styles.mainContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <LogoDesign />
-      <View style={{flex: 1, justifyContent: 'center'}}>
+      <View style={styles.innerContainer}>
         <Text style={styles.title}>Verify OTP Code</Text>
         <View style={styles.inputContainer}>
           <Controller
@@ -93,7 +87,7 @@ const VerifyOtpScreen = ({
                 value={value}
                 keyboardType={'numeric'}
                 onChange={onChange}
-                errorMsg={errors.otp && errors.otp.message}
+                errorMsg={errors?.otp?.message}
                 otp={true}
               />
             )}
@@ -119,29 +113,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: widthInDp(5),
     backgroundColor: COLORS.white,
   },
-  logoStyle: {
-    alignSelf: 'center',
-    marginVertical: heightInDp(2.5),
-  },
+  innerContainer: {flex: 1, justifyContent: 'center'},
+
   title: {
     fontSize: heightInDp(5),
-    fontFamily: FONTS.InterRegular,
+    fontFamily: FONTS.InterSemiBold,
   },
-  noAccountStyle: {
-    color: COLORS.darkGray,
-  },
-  register: {
-    color: COLORS.primary,
-  },
+
   inputContainer: {
     width: '100%',
     alignSelf: 'center',
     marginVertical: heightInDp(2.5),
     rowGap: heightInDp(2.5),
-  },
-  forgetPassView: {marginVertical: heightInDp(2.5)},
-  forgetPass: {
-    color: COLORS.primary,
-    fontSize: widthInDp(5),
   },
 });

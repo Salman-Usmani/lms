@@ -17,39 +17,39 @@ export const Button = (props: IButton) => {
   const {title, background, handlePress, loading, svg, containerStyle} = props;
 
   return (
-    <TouchableOpacity onPress={handlePress} disabled={loading}>
-      <View
-        style={[
-          {
-            ...styles.btnInnerView,
-            backgroundColor: background ? COLORS.primary : COLORS.disable,
-          },
-          containerStyle,
-        ]}>
-        {svg ? (
-          <SvgXml
-            xml={svg}
-            width={widthInDp(7)}
-            height={widthInDp(7)}
-            style={styles.svgStyle}
-          />
-        ) : null}
+    <TouchableOpacity
+      onPress={handlePress}
+      disabled={loading}
+      style={[
+        {
+          ...styles.btnInnerView,
+          backgroundColor: background ? COLORS.primary : COLORS.disable,
+        },
+        containerStyle,
+      ]}>
+      {svg ? (
+        <SvgXml
+          xml={svg}
+          width={widthInDp(7)}
+          height={widthInDp(7)}
+          style={styles.svgStyle}
+        />
+      ) : null}
 
-        {loading ? (
-          <ActivityIndicator
-            size={'small'}
-            color={background ? COLORS.white : COLORS.darkGray}
-          />
-        ) : (
-          <Text
-            style={[
-              styles.btnText,
-              {color: background ? COLORS.white : COLORS.primary},
-            ]}>
-            {title}
-          </Text>
-        )}
-      </View>
+      {loading ? (
+        <ActivityIndicator
+          size={'small'}
+          color={background ? COLORS.white : COLORS.darkGray}
+        />
+      ) : (
+        <Text
+          style={[
+            styles.btnText,
+            {color: background ? COLORS.white : COLORS.primary},
+          ]}>
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: widthInDp(6),
     fontFamily: FONTS.InterRegular,
-    // color: colors.darkBlue,
   },
   svgStyle: {marginRight: widthInDp(5)},
 });

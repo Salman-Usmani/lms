@@ -35,17 +35,12 @@ export const PhoneInput = (props: ITextInput) => {
 
   return (
     <View>
-      {title && <Text style={{fontFamily: FONTS.InterRegular}}>{title}</Text>}
-      <View
-        style={{
-          borderWidth: 0.5,
-          flexDirection: 'row',
-          borderRadius: widthInDp(2),
-        }}>
+      {title && <Text style={styles.heading}>{title}</Text>}
+      <View style={styles.bodyContainer}>
         <TouchableOpacity
           onPress={() => setIsModal(true)}
           style={styles.leftIconButton}>
-          <Text style={{fontFamily: FONTS.InterRegular}}>
+          <Text style={styles.leftIcon}>
             {selectedCountry.flag} {selectedCountry.dial_code}{' '}
           </Text>
           <ICONS.AntDesign name="caretdown" size={widthInDp(2)} />
@@ -53,7 +48,6 @@ export const PhoneInput = (props: ITextInput) => {
         <TextInput
           placeholder={placeholder}
           placeholderTextColor={COLORS.darkGray}
-          // value={num}
           maxLength={11}
           keyboardType="numeric"
           onChangeText={text => {
@@ -72,25 +66,17 @@ export const PhoneInput = (props: ITextInput) => {
           }}
         />
       </View>
-      {errormsg && (
-        <Text
-          style={{
-            color: COLORS.error,
-            marginHorizontal: widthInDp(3),
-            fontFamily: FONTS.InterRegular,
-          }}>
-          {errormsg}
-        </Text>
-      )}
+      {errormsg && <Text style={styles.errorText}>{errormsg}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  inputField: {
-    flex: 1,
-    color: COLORS.black,
-    fontFamily: FONTS.InterRegular,
+  heading: {fontFamily: FONTS.InterRegular},
+  bodyContainer: {
+    borderWidth: 0.5,
+    flexDirection: 'row',
+    borderRadius: widthInDp(2),
   },
   leftIconButton: {
     borderRightWidth: 0.5,
@@ -101,5 +87,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: widthInDp(1.5),
     backgroundColor: COLORS.lightGray,
+  },
+  leftIcon: {fontFamily: FONTS.InterRegular},
+  inputField: {
+    flex: 1,
+    color: COLORS.black,
+    fontFamily: FONTS.InterRegular,
+  },
+  errorText: {
+    color: COLORS.error,
+    marginHorizontal: widthInDp(3),
+    fontFamily: FONTS.InterRegular,
   },
 });

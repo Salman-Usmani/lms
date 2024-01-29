@@ -5,6 +5,7 @@ import {COLORS, ICONS} from '../../../../themes';
 import {IComments} from '../../../../types';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {CommentDeletePrompt} from './deleteComment';
+import {ImageWithFallbabck} from '../../../../components';
 
 export const PostsComments = ({
   postsComments,
@@ -63,82 +64,31 @@ const Item = ({
 }) => {
   return (
     <View style={styles.container}>
-      <View style={{flex: 1, flexDirection: 'row'}}>
-        {item?.user?.avatar ? (
-          <Image
-            source={{uri: item.user.avatar}}
-            style={{
-              height: widthInDp(8),
-              width: widthInDp(8),
-              borderRadius: widthInDp(100),
-            }}
-          />
-        ) : (
-          <View
-            style={{
-              backgroundColor: COLORS.lightGray,
-              borderRadius: widthInDp(100),
-              width: widthInDp(8),
-              height: widthInDp(8),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ICONS.FontAwesome6
-              name="user-large"
-              size={widthInDp(4)}
-              color={COLORS.white}
-            />
-          </View>
-        )}
+      <View style={styles.profileView}>
+        <ImageWithFallbabck
+          source={item?.user?.avatar}
+          name={item.user?.name || ''}
+          diameter={widthInDp(8)}
+        />
 
-        <View
-          style={{
-            flex: 1,
-            marginLeft: widthInDp(3),
-            justifyContent: 'space-around',
-          }}>
-          <Text
-            style={{
-              color: COLORS.textPrimary,
-              fontWeight: '500',
-              fontSize: widthInDp(3),
-            }}>
-            {item.user?.name}
-          </Text>
-
-          <Text
-            style={{
-              color: COLORS.textSecondary,
-              fontWeight: '500',
-              fontSize: widthInDp(3),
-            }}>
-            <Text style={{color: COLORS.textHighlight, fontWeight: '600'}}>
-              {item.user?.email}
-            </Text>
-            , {moment(item.createdAt).fromNow()}
+        <View style={styles.userDetailView}>
+          <Text style={styles.userName}>{item.user?.name}</Text>
+          <Text style={styles.userCreatedAt}>
+            <Text style={styles.userMail}>{item.user?.email}</Text>,{' '}
+            {moment(item.createdAt).fromNow()}
           </Text>
         </View>
       </View>
 
-      <View
-        style={{
-          flex: 1,
-        }}>
-        <Text
-          style={{
-            color: COLORS.textSecondary,
-            fontSize: widthInDp(4),
-            marginRight: widthInDp(5),
-          }}>
-          {item.content}
-        </Text>
+      <View style={styles.commentView}>
+        <Text style={styles.comment}>{item.content}</Text>
         {userId === item.user?._id && (
           <ICONS.Ionicons
             onPress={onPressDelete}
             name="trash"
             color={COLORS.error}
             size={widthInDp(5)}
-            style={{alignSelf: 'flex-end'}}
+            style={styles.trashIconStyle}
           />
         )}
       </View>
@@ -164,7 +114,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: widthInDp(3),
     backgroundColor: COLORS.white,
   },
-  separator: {
-    height: heightInDp(1),
+  separator: {height: heightInDp(1)},
+  trashIconStyle: {alignSelf: 'flex-end'},
+  profileView: {flex: 1, flexDirection: 'row'},
+  avatar: {
+    height: widthInDp(8),
+    width: widthInDp(8),
+    borderRadius: widthInDp(100),
+  },
+  noAvatarView: {
+    backgroundColor: COLORS.lightGray,
+    borderRadius: widthInDp(100),
+    width: widthInDp(8),
+    height: widthInDp(8),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userDetailView: {
+    flex: 1,
+    marginLeft: widthInDp(3),
+    justifyContent: 'space-around',
+  },
+  userName: {
+    color: COLORS.textPrimary,
+    fontWeight: '500',
+    fontSize: widthInDp(3),
+  },
+  userCreatedAt: {
+    color: COLORS.textSecondary,
+    fontWeight: '500',
+    fontSize: widthInDp(3),
+  },
+  userMail: {color: COLORS.textHighlight, fontWeight: '600'},
+  commentView: {
+    flex: 1,
+  },
+  comment: {
+    color: COLORS.textSecondary,
+    fontSize: widthInDp(4),
+    marginRight: widthInDp(5),
   },
 });

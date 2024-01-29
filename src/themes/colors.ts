@@ -20,6 +20,7 @@ export const COLORS = {
   darkGray: '#616161',
   midGray: '#959595',
   lightBlue: '#E6F5FF',
+  roleColor: '#ADA7A7',
   lightGray: '#BBBBBB',
   black: '#1E1E1E',
 };

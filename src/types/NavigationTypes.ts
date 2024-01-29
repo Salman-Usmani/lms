@@ -18,6 +18,7 @@ export type RootStackScreensList = {
   Dashboard: undefined;
   Account: undefined;
   Group: undefined;
+  Chat: undefined;
 };
 export type RootStackNavigationProp<T extends keyof RootStackScreensList> =
   StackScreenProps<RootStackScreensList, T>;
@@ -43,3 +44,19 @@ export type GroupStackScreensList = {
 };
 export type GroupStackNavigagtionProps<T extends keyof GroupStackScreensList> =
   StackScreenProps<GroupStackScreensList, T>;
+
+export type ChatStackScreensList = {
+  ChatScreen: undefined;
+  MessageScreen: {
+    chatId: string;
+    recieverUser: {
+      _id: string;
+      name: string;
+      email: string;
+      role: string;
+      avatar: string;
+    };
+  };
+};
+export type ChatStackNavigagtionProps<T extends keyof ChatStackScreensList> =
+  StackScreenProps<ChatStackScreensList, T>;

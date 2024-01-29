@@ -21,6 +21,7 @@ import {widthInDp} from '../utils';
 import CustomDrawerContent from './CustomDrawer';
 import {CohortStack} from './DrawerScreensStack/CohortStack';
 import {GroupStack} from './DrawerScreensStack/GroupStack';
+import {ChatStack} from './DrawerScreensStack/ChatStack';
 
 const Drawer = createDrawerNavigator<RootStackScreensList>();
 
@@ -29,7 +30,7 @@ const RootStack = () => {
 
   return (
     <Drawer.Navigator
-      initialRouteName={__DEV__ ? 'Group' : 'Dashboard'}
+      initialRouteName={__DEV__ ? 'Chat' : 'Dashboard'}
       screenOptions={({navigation}) => ({
         // Add a placeholder button without the `onPress` to avoid flicker
         swipeEnabled: false,
@@ -90,23 +91,8 @@ const RootStack = () => {
         name="Dashboard"
         component={CohortStack}
         options={{
-          // headerShown: false,
           drawerLabel: 'Dashboard',
           drawerIcon: () => <SvgXml xml={signal} />,
-        }}
-      />
-      <Drawer.Screen
-        name="Account"
-        component={AccountScreen}
-        options={{
-          drawerLabel: 'Account',
-          drawerIcon: () => (
-            <ICONS.FontAwesome6
-              name="user-large"
-              size={widthInDp(5)}
-              color={COLORS.primary}
-            />
-          ),
         }}
       />
       <Drawer.Screen
@@ -123,15 +109,40 @@ const RootStack = () => {
           ),
         }}
       />
+      <Drawer.Screen
+        name="Chat"
+        component={ChatStack}
+        options={{
+          drawerLabel: 'Chat',
+          drawerIcon: () => (
+            <ICONS.Ionicons
+              name="chatbox-ellipses"
+              size={widthInDp(5)}
+              color={COLORS.primary}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Account"
+        component={AccountScreen}
+        options={{
+          drawerLabel: 'Account',
+          drawerIcon: () => (
+            <ICONS.FontAwesome6
+              name="user-large"
+              size={widthInDp(5)}
+              color={COLORS.primary}
+            />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 };
 export default RootStack;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   icon: {
     backgroundColor: COLORS.primary,
     borderRadius: widthInDp(10),
@@ -146,5 +157,4 @@ const styles = StyleSheet.create({
     columnGap: widthInDp(3),
     marginHorizontal: widthInDp(5),
   },
-  image: {flex: 1, borderRadius: widthInDp(10)},
 });

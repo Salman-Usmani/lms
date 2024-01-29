@@ -11,7 +11,7 @@ const MediaScreen = ({
 }: CohortStackNavigagtionProps<'Media'>) => {
   const {fileType, url} = route.params;
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       <StatusBar hidden />
       {fileType === 'pdf' ? (
         <View style={styles.container}>
@@ -38,10 +38,7 @@ const MediaScreen = ({
         </View>
       ) : (
         fileType === 'video' && (
-          <View
-            style={{
-              flex: 1,
-            }}>
+          <View style={styles.container}>
             <VideoPlayer
               source={{
                 uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',

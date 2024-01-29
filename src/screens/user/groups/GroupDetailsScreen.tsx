@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
@@ -14,12 +15,12 @@ import {dataServer} from '../../../services/axiosConfig';
 import {COLORS, FONTS, ICONS} from '../../../themes';
 import {GroupStackNavigagtionProps, IGroupPost} from '../../../types';
 import {heightInDp, widthInDp} from '../../../utils';
-import {GroupPosts} from './screenComponents/groupPosts';
 import {CreatePostModal} from './screenComponents/createPostModal';
+import {GroupPosts} from './screenComponents/groupPosts';
+import {ImageWithFallbabck} from '../../../components';
 
 const GroupDetailsScreen = ({
   route,
-  navigation,
 }: GroupStackNavigagtionProps<'GroupDetailsScreen'>) => {
   const {_id, name, avatar, groupOwners, createdAt, description, groupMembers} =
     route.params;
@@ -36,7 +37,6 @@ const GroupDetailsScreen = ({
       );
       if (fetchGroupPostsApi.status === 200) {
         const posts = fetchGroupPostsApi.data.data.posts;
-        // Reverse the posts array
         const reversedPosts = posts.slice().reverse();
         setGroupPosts(reversedPosts);
         setLoading(false);
@@ -46,6 +46,7 @@ const GroupDetailsScreen = ({
         });
       }
     } catch (error: any) {
+      console.log('error.response.data', error.response.data);
       setLoading(false);
       Toast.show({
         type: 'error',
@@ -84,190 +85,65 @@ const GroupDetailsScreen = ({
 
       <View style={styles.container}>
         <Text style={styles.heading}>Group Created by</Text>
-        <View style={{flexDirection: 'row'}}>
-          <Image
-            source={{uri: groupOwners.avatar}}
-            style={{
-              height: widthInDp(15),
-              width: widthInDp(15),
-              borderRadius: widthInDp(15),
-            }}
+        <View style={styles.ownerInfoView}>
+          <ImageWithFallbabck
+            source={groupOwners.avatar}
+            name={groupOwners.name}
+            diameter={widthInDp(13)}
           />
-          <View
-            style={{
-              flex: 1,
-              marginLeft: widthInDp(3),
-              justifyContent: 'space-around',
-            }}>
-            <Text
-              style={{
-                color: COLORS.textPrimary,
-                fontWeight: '500',
-                fontSize: widthInDp(4),
-              }}>
-              {groupOwners.name}
-            </Text>
+          <View style={styles.ownerProfile}>
+            <Text style={styles.ownerName}>{groupOwners.name}</Text>
 
-            <Text
-              style={{
-                color: COLORS.textSecondary,
-                fontWeight: '500',
-                fontSize: widthInDp(4),
-              }}>
-              <Text style={{color: COLORS.textHighlight, fontWeight: '600'}}>
-                {groupOwners.email}
-              </Text>
-              ,{' '}
-              {new Date(createdAt).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-              })}
+            <Text style={styles.ownerCreatedAt}>
+              <Text style={styles.ownerMail}>{groupOwners.email}</Text>,{' '}
+              {moment(createdAt).format('ll')}
             </Text>
           </View>
         </View>
       </View>
       <View style={styles.container}>
-        <Text
-          style={{
-            fontSize: widthInDp(5),
-            // fontFamily: FONTS.Inter,
-            fontWeight: '600',
-          }}>
-          About Group
-        </Text>
-        <Text
-          style={{
-            fontSize: widthInDp(5),
-            color: COLORS.textSubHeading,
-            // fontFamily: FONTS.Inter,
-            fontWeight: '600',
-          }}>
-          {name}
-        </Text>
-        <Text
-          style={{
-            fontSize: widthInDp(4),
-            color: COLORS.textSubHeading,
-            // fontFamily: FONTS.Inter,
-            fontWeight: '400',
-          }}>
-          {description}
-        </Text>
+        <Text style={styles.heading}>About Group</Text>
+        <Text style={styles.groupName}>{name}</Text>
+        <Text style={styles.groupDesc}>{description}</Text>
       </View>
       <View style={styles.container}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text
-            style={{
-              fontSize: widthInDp(5),
-              // fontFamily: FONTS.Inter,
-              fontWeight: '600',
-            }}>
-            Members{' '}
-            <Text style={{color: COLORS.numColor}}>{groupMembers.length}</Text>
-          </Text>
-          <Text
-            style={{
-              fontSize: widthInDp(5),
-              color: COLORS.numColor,
-              // fontFamily: FONTS.Inter,
-              fontWeight: '600',
-            }}>
-            See All
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            gap: widthInDp(2),
-          }}>
+        <Text style={styles.heading}>
+          Members <Text style={styles.memberCount}>{groupMembers.length}</Text>
+        </Text>
+        <View style={styles.membersView}>
           {groupMembers.map(member => (
-            <View
-              key={member._id}
-              style={{
-                borderRadius: widthInDp(100),
-                backgroundColor: COLORS.imageBorder,
-                padding: widthInDp(1),
-                borderColor: COLORS.white,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {member?.member?.avatar ? (
-                <Image
-                  source={{uri: member.member.avatar}}
-                  height={widthInDp(10)}
-                  width={widthInDp(10)}
-                  resizeMode="contain"
-                  // onError={() => <Text style={{color: COLORS.black}}>A</Text>}
-                  style={{
-                    borderRadius: widthInDp(100),
-                    borderWidth: 1,
-                    backgroundColor: COLORS.white,
-                  }}
-                />
-              ) : (
-                <View
-                  style={{
-                    backgroundColor: COLORS.white,
-                    borderRadius: widthInDp(100),
-                    width: widthInDp(10),
-                    height: widthInDp(10),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <ICONS.FontAwesome6
-                    name="user-large"
-                    size={widthInDp(6)}
-                    color={COLORS.darkGray}
-                  />
-                </View>
-              )}
+            <View key={member._id} style={styles.memberImgView}>
+              <ImageWithFallbabck
+                source={member.member.avatar}
+                name={member.member.name}
+                diameter={widthInDp(10)}
+              />
             </View>
           ))}
         </View>
       </View>
-      <View style={styles.container}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text
-            style={{
-              fontSize: widthInDp(5),
-              // fontFamily: FONTS.Inter,
-              fontWeight: '600',
-            }}>
-            Recent Post
-          </Text>
-          <ICONS.FontAwesome6
-            name="ellipsis-vertical"
-            size={widthInDp(5)}
-            color={COLORS.iconColor}
-          />
-        </View>
-      </View>
-      <View style={{flex: 1, flexDirection: 'row'}}>
-        <Image
-          source={{uri: user?.avatar}}
-          style={{
-            height: widthInDp(15),
-            width: widthInDp(15),
-            borderRadius: widthInDp(15),
-            marginRight: widthInDp(2),
-          }}
+      <View style={[styles.container, styles.rowContainer]}>
+        <Text style={styles.heading}>Recent Post</Text>
+        <ICONS.FontAwesome6
+          name="ellipsis-vertical"
+          size={widthInDp(5)}
+          color={COLORS.iconColor}
         />
+      </View>
+      <View style={styles.addPowtView}>
+        <ImageWithFallbabck
+          source={user?.avatar}
+          name={user?.name || ''}
+          diameter={widthInDp(13)}
+        />
+
         <TouchableOpacity
           onPress={() => {
             setShowModal(true);
           }}
-          style={[
-            styles.container,
-            {
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            },
-          ]}>
-          <Text>Add new post here</Text>
-          <View style={{flexDirection: 'row', gap: widthInDp(2)}}>
+          style={[styles.container, styles.rowContainer]}>
+          <Text style={styles.addPostText}>Add new post here</Text>
+          <View style={styles.iconView}>
             <ICONS.FontAwesome5
               name="images"
               size={widthInDp(5)}
@@ -302,10 +178,8 @@ export default GroupDetailsScreen;
 const styles = StyleSheet.create({
   indicatorStyle: {flex: 1, backgroundColor: COLORS.white},
   mainContainer: {
-    // flex: 1,
     paddingHorizontal: widthInDp(3),
     backgroundColor: COLORS.white,
-    // gap: widthInDp(3),
     rowGap: heightInDp(2),
   },
   container: {
@@ -322,25 +196,66 @@ const styles = StyleSheet.create({
     fontSize: widthInDp(3),
     color: COLORS.primary,
   },
-  heading: {
-    fontSize: widthInDp(5),
-    fontWeight: '600',
-  },
+  heading: {fontSize: widthInDp(4), fontFamily: FONTS.InterSemiBold},
+  memberCount: {color: COLORS.numColor, fontFamily: FONTS.InterRegular},
   groupImage: {
     height: heightInDp(25),
     width: 'auto',
     borderRadius: widthInDp(1.5),
   },
   title: {
-    fontFamily: FONTS.InterRegular,
+    fontFamily: FONTS.InterSemiBold,
     fontSize: widthInDp(5),
     color: COLORS.primary,
-    fontWeight: '700',
+  },
+  iconView: {flexDirection: 'row', gap: widthInDp(2)},
+  ownerInfoView: {flexDirection: 'row'},
+
+  ownerProfile: {
+    flex: 1,
+    marginLeft: widthInDp(3),
+    justifyContent: 'space-around',
+  },
+  ownerName: {
+    color: COLORS.textPrimary,
+    fontFamily: FONTS.InterSemiBold,
+    fontSize: widthInDp(4),
+  },
+  ownerCreatedAt: {
+    color: COLORS.textSecondary,
+    fontFamily: FONTS.InterSemiBold,
+    fontSize: widthInDp(4),
+  },
+  ownerMail: {color: COLORS.textHighlight},
+  addPowtView: {flex: 1, flexDirection: 'row', columnGap: widthInDp(2)},
+  addPostText: {fontFamily: FONTS.InterRegular},
+  groupName: {
+    fontSize: widthInDp(5),
+    color: COLORS.textSubHeading,
+    fontFamily: FONTS.InterSemiBold,
+  },
+  groupDesc: {
+    fontSize: widthInDp(4),
+    color: COLORS.textSubHeading,
+    fontFamily: FONTS.InterRegular,
+  },
+  membersView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: widthInDp(2),
+  },
+  memberImgView: {
+    borderRadius: widthInDp(100),
+    backgroundColor: COLORS.imageBorder,
+    padding: widthInDp(1),
+    borderColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
-  separator: {
-    height: heightInDp(1), // Adjust the height of the separator as needed
-    // backgroundColor: COLORS.lightGray, // Separator color
-    // marginHorizontal: widthInDp(3),
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });

@@ -40,21 +40,14 @@ export const CommentDeletePrompt = (props: IImagePicker) => {
             title={'Delete'}
             background={true}
             handlePress={handleDeleteComment}
-            containerStyle={{
-              marginTop: heightInDp(3),
-              marginHorizontal: widthInDp(5),
-              borderRadius: widthInDp(2),
-            }}
+            containerStyle={styles.deleteBtnStyle}
           />
 
           <Button
             title={'Cancel'}
             background={false}
             handlePress={() => setShowModal(false)}
-            containerStyle={{
-              marginHorizontal: widthInDp(5),
-              borderRadius: widthInDp(2),
-            }}
+            containerStyle={styles.cancelBtnStyle}
           />
         </View>
       </View>
@@ -83,22 +76,7 @@ const styles = StyleSheet.create({
     marginHorizontal: widthInDp(2),
     marginTop: widthInDp(2),
   },
-  textStyle: {
-    borderBottomWidth: 1,
-    justifyContent: 'center',
-    flex: 1.5,
-  },
-  separator: {
-    borderLeftWidth: 1,
-    height: '100%',
-  },
 
-  btnContainer: {
-    flex: 1,
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   txt1: {
     fontSize: widthInDp(5),
     // textTransform: 'uppercase',
@@ -108,9 +86,13 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.InterRegular,
     marginHorizontal: widthInDp(8),
   },
-  btnView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  deleteBtnStyle: {
+    marginTop: heightInDp(3),
+    marginHorizontal: widthInDp(5),
+    borderRadius: widthInDp(2),
+  },
+  cancelBtnStyle: {
+    marginHorizontal: widthInDp(5),
+    borderRadius: widthInDp(2),
   },
 });
