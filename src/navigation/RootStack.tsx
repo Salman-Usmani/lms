@@ -1,27 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {CommonActions} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {SvgXml} from 'react-native-svg';
-import {signal} from '../assets';
+import {capOverBook} from '../assets';
 import {MenuContainer} from '../components';
 import {useUserContext} from '../context/UserContext';
-import {
-  AccountScreen,
-  CohortScreen,
-  GroupDetailsScreen,
-  GroupScreen,
-  MediaScreen,
-} from '../screens';
+import {AccountScreen, DashboardScreen} from '../screens';
 import {COLORS, ICONS} from '../themes';
-import {CohortStackScreensList, RootStackScreensList} from '../types';
+import {RootStackScreensList} from '../types';
 import {widthInDp} from '../utils';
 import CustomDrawerContent from './CustomDrawer';
+import {ChatStack} from './DrawerScreensStack/ChatStack';
 import {CohortStack} from './DrawerScreensStack/CohortStack';
 import {GroupStack} from './DrawerScreensStack/GroupStack';
-import {ChatStack} from './DrawerScreensStack/ChatStack';
 
 const Drawer = createDrawerNavigator<RootStackScreensList>();
 
@@ -52,14 +45,14 @@ const RootStack = () => {
         ),
         headerRight: () => (
           <View style={styles.rightHeader}>
-            <View style={styles.icon}>
+            {/* <View style={styles.icon}>
               <ICONS.FontAwesome6
                 name="user-group"
                 size={widthInDp(4)}
                 color={COLORS.white}
                 // onPress={() => navigation.navigate('Account')}
               />
-            </View>
+            </View> */}
             <View style={styles.icon}>
               <ICONS.Octicons
                 name="bell"
@@ -89,21 +82,35 @@ const RootStack = () => {
       drawerContent={props => <CustomDrawerContent {...props} />}>
       <Drawer.Screen
         name="Dashboard"
-        component={CohortStack}
+        component={DashboardScreen}
         options={{
           drawerLabel: 'Dashboard',
-          drawerIcon: () => <SvgXml xml={signal} />,
+          drawerIcon: () => (
+            <ICONS.MaterialCommunityIcons
+              name="view-dashboard"
+              size={widthInDp(7)}
+              color={COLORS.primary}
+            />
+          ),
         }}
       />
       <Drawer.Screen
-        name="Group"
+        name="Library"
+        component={CohortStack}
+        options={{
+          drawerLabel: 'Course Material Library',
+          drawerIcon: () => <SvgXml xml={capOverBook} />,
+        }}
+      />
+      <Drawer.Screen
+        name="Community"
         component={GroupStack}
         options={{
-          drawerLabel: 'Group',
+          drawerLabel: 'Community',
           drawerIcon: () => (
-            <ICONS.FontAwesome6
-              name="user-group"
-              size={widthInDp(5)}
+            <ICONS.MaterialIcons
+              name="groups"
+              size={widthInDp(7)}
               color={COLORS.primary}
             />
           ),

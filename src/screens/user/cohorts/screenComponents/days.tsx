@@ -4,22 +4,14 @@ import React, {useState} from 'react';
 import {COLORS, FONTS, ICONS} from '../../../../themes';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {Resources} from './resources';
-
-interface IDays {
-  _id: string;
-  title: string;
-  videos: [{url: string; title: string; isDownloadable: boolean; _id: string}];
-  pdfs: [{url: string; title: string; isDownloadable: boolean; _id: string}];
-  ppts: [{url: string; title: string; isDownloadable: boolean; _id: string}];
-  // docs: [{url: string; title: string; isDownloadable: boolean; _id: string}];
-}
+import {IDay} from './interface';
 
 const Item = ({
   item,
   onPress,
   selectedItem,
 }: {
-  item: IDays;
+  item: IDay;
   onPress: () => void;
   selectedItem: string;
 }) => {
@@ -60,10 +52,10 @@ const Item = ({
 };
 const Separator = () => <View style={styles.separator} />;
 
-export const Days = ({days}: {days: IDays[]}) => {
+export const Days = ({days}: {days: IDay[]}) => {
   const [selectedDay, setSelectedDay] = useState('');
 
-  const renderItem = ({item}: {item: IDays}) => {
+  const renderItem = ({item}: {item: IDay}) => {
     return (
       <Item
         item={item}

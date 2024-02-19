@@ -74,39 +74,22 @@ const SignUpScreen = ({navigation}: AuthStackNavigationProp<'SignUp'>) => {
           </Text>
         </Text>
         <View style={styles.inputContainer}>
-          <Controller
+          <FloatingTitleTextInputField
+            title="Full Name"
+            keyboardType={'default'}
+            errorMsg={errors?.name?.message}
             control={control}
-            rules={{
-              required: 'Full name is required',
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Full Name"
-                value={value}
-                keyboardType={'default'}
-                onChange={onChange}
-                errorMsg={errors?.name?.message}
-              />
-            )}
             name={'name'}
           />
-          <Controller
-            control={control}
-            rules={{
-              required: 'Email is required',
-              pattern: {value: EMAIL_REGEX, message: 'Email is not valid'},
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Email"
-                value={value}
-                keyboardType={'email-address'}
-                onChange={onChange}
-                errorMsg={errors?.email?.message}
-              />
-            )}
+
+          <FloatingTitleTextInputField
+            title="Email"
+            keyboardType={'email-address'}
+            errorMsg={errors?.email?.message}
             name={'email'}
+            control={control}
           />
+
           <Controller
             control={control}
             rules={{
@@ -122,51 +105,26 @@ const SignUpScreen = ({navigation}: AuthStackNavigationProp<'SignUp'>) => {
             )}
             name={'phoneNo'}
           />
-          <Controller
-            control={control}
-            rules={{
-              required: 'password is required',
-              minLength: {
-                value: 8,
-                message: 'Password must be at least 8 characters',
-              },
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Password"
-                value={value}
-                keyboardType={'default'}
-                isPassword={true}
-                onChange={onChange}
-                errorMsg={errors?.password?.message}
-              />
-            )}
+
+          <FloatingTitleTextInputField
+            title="Password"
+            keyboardType={'default'}
+            isPassword={true}
+            errorMsg={errors?.password?.message}
             name={'password'}
+            control={control}
           />
 
-          <Controller
-            control={control}
-            rules={{
-              required: 'confirm password is required',
-              minLength: {
-                value: 8,
-                message: 'Password must be at least 8 characters',
-              },
-              validate: value =>
-                value === watch('password') || 'Passwords do not match',
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Confirm Password"
-                value={value}
-                keyboardType={'default'}
-                onChange={onChange}
-                isPassword={true}
-                errorMsg={errors?.confirmPassword?.message}
-              />
-            )}
+          <FloatingTitleTextInputField
+            title="Confirm Password"
+            keyboardType={'default'}
+            isPassword={true}
+            errorMsg={errors?.confirmPassword?.message}
+            matchPassword={watch('password')}
             name={'confirmPassword'}
+            control={control}
           />
+
           <Controller
             control={control}
             rules={{

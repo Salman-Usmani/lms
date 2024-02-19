@@ -1,24 +1,16 @@
-import React, {useState} from 'react';
-
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-
+import React from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {COLORS, FONTS, ICONS} from '../../../../themes';
-import {heightInDp, widthInDp} from '../../../../utils';
 import {CohortStackScreensList} from '../../../../types';
-import ReactNativeBlobUtil from 'react-native-blob-util';
-import Toast from 'react-native-toast-message';
-import RNFS from 'react-native-fs';
+import {
+  fileDownloader,
+  getExtensionFromUrl,
+  widthInDp,
+} from '../../../../utils';
+import {IFile} from './interface';
 
-interface IFile {
-  url?: string;
-  viewUrl?: string;
-  downloadUrl?: string;
-  title: string;
-  isDownloadable: boolean;
-  _id: string;
-}
 type FileType = 'pdf' | 'ppt' | 'video';
 
 const Item = ({
@@ -79,73 +71,8 @@ export const Files = ({
   files: IFile[];
   fileType: FileType;
 }) => {
-  const [isLoading, setLoading] = useState(true);
   const navigation =
     useNavigation<StackNavigationProp<CohortStackScreensList>>();
-  function getExtensionFromUrl(url: string) {
-    // Split the URL by dot (.) and get the last part as the extension
-    const parts = url.split('.');
-    if (parts.length > 1) {
-      return parts[parts.length - 1];
-    } else {
-      return ''; // No extension found
-    }
-  }
-
-  async function downloadFileWithRetry(fileUrl = '', title: string) {
-    if (!fileUrl) {
-      return;
-    }
-    try {
-      setLoading(true);
-
-      const extension = getExtensionFromUrl(fileUrl);
-      const fileName = fileUrl.split('/').pop();
-
-      const localFile = `${RNFS.DownloadDirectoryPath}/${fileName}`;
-      // ReactNativeBlobUtil.fs.dirs.DownloadDir + '/' + fileName;
-
-      const exists = await ReactNativeBlobUtil.fs.exists(localFile);
-      if (exists) {
-        Toast.show({
-          type: 'info',
-          text1: 'file already exists',
-        });
-        return;
-      }
-
-      await ReactNativeBlobUtil.config({
-        fileCache: false,
-        appendExt: extension,
-        addAndroidDownloads: {
-          useDownloadManager: true,
-          notification: true,
-          title: title,
-          path: localFile,
-        },
-        // path: localFile,
-      })
-        .fetch('GET', fileUrl)
-        .progress((received, total) => {
-          Toast.show({
-            type: 'info',
-            text1: `${((Number(received) / Number(total)) * 100).toFixed(
-              2,
-            )}% downloaded`,
-          });
-        })
-        .then(res => {
-          console.log('path', res.path());
-        });
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      Toast.show({
-        type: 'info',
-        text1: String(error),
-      });
-    }
-  }
 
   const renderItem = ({item}: {item: IFile}) => {
     return (
@@ -162,7 +89,10 @@ export const Files = ({
           }
         }}
         onPressDownload={() => {
-          downloadFileWithRetry(item.downloadUrl || item.url, item.title);
+          fileDownloader({
+            fileUrl: item.downloadUrl || '',
+            title: item.title,
+          });
         }}
       />
     );

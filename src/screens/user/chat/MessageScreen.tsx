@@ -1,23 +1,21 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useUserContext} from '../../../context/UserContext';
-import {heightInDp, widthInDp} from '../../../utils';
-import {COLORS, FONTS, ICONS} from '../../../themes';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import Config from 'react-native-config';
 import {
-  GiftedChat,
-  Send,
-  Composer,
   Bubble,
   BubbleProps,
+  Composer,
+  GiftedChat,
   IMessage,
+  Send,
 } from 'react-native-gifted-chat';
-import {dataServer} from '../../../services/axiosConfig';
 import Toast from 'react-native-toast-message';
-import {ChatStackNavigagtionProps} from '../../../types';
 import {Socket, io} from 'socket.io-client';
-import Config from 'react-native-config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ImageWithFallbabck} from '../../../components';
+import {useUserContext} from '../../../context/UserContext';
+import {dataServer} from '../../../services/axiosConfig';
+import {COLORS, ICONS} from '../../../themes';
+import {ChatStackNavigagtionProps} from '../../../types';
+import {UseAccessToken, widthInDp} from '../../../utils';
 
 type Imsg = {
   _id: string;
@@ -77,15 +75,7 @@ const MessageScreen = ({route}: ChatStackNavigagtionProps<'MessageScreen'>) => {
   useEffect(() => {
     fetchMessages();
   }, []);
-  const UseAccessToken = async () => {
-    const token = await AsyncStorage.getItem('accessToken');
-    if (token) {
-      const parseUserToken = JSON.parse(token);
-      return parseUserToken || null;
-    } else {
-      return null;
-    }
-  };
+
   const initializeSocket = async () => {
     try {
       const accessToken = await UseAccessToken();
@@ -108,7 +98,6 @@ const MessageScreen = ({route}: ChatStackNavigagtionProps<'MessageScreen'>) => {
         // socket.on('connect_error', e => {
         //   console.log('Socket not connected', e);
         // });
-        console.log('socket', socket.connected);
       }
     } catch (error) {
       console.log('Error initializing socket', error);
@@ -127,13 +116,13 @@ const MessageScreen = ({route}: ChatStackNavigagtionProps<'MessageScreen'>) => {
     };
   }, [socket]);
 
-  const onMessageDelivered = (messageId: any) => {
+  const onMessageDelivered = (messageId: string) => {
     socket?.emit('onMessageDelivered', messageId);
   };
 
   function processMessage(newMessage: any) {
-    const messageForCurrentUser = newMessage.sender._id === user?._id;
-    if (messageForCurrentUser) return;
+    const messageFromCurrentUser = newMessage.sender._id === user?._id;
+    if (messageFromCurrentUser) return;
 
     const msgs = {
       _id: newMessage._id,
@@ -183,8 +172,6 @@ const MessageScreen = ({route}: ChatStackNavigagtionProps<'MessageScreen'>) => {
           chatId,
           recieverUserId: recieverUser._id,
         };
-        console.log('client', socket);
-
         socket?.emit('onSendChatMessage', newMessage);
         setMessages(previousMessages =>
           GiftedChat.append(previousMessages, messages),

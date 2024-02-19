@@ -10,7 +10,7 @@ import {
 import {COLORS, FONTS} from '../../../../themes';
 import {IGroups} from '../../../../types';
 import {heightInDp, widthInDp} from '../../../../utils';
-import {ImageWithFallbabck} from '../../../../components';
+import {ImageWithFallbabck, ListEmptyComponent} from '../../../../components';
 
 const Item = ({item, onPress}: {item: IGroups; onPress: () => void}) => {
   return (
@@ -25,23 +25,20 @@ const Item = ({item, onPress}: {item: IGroups; onPress: () => void}) => {
         </Text>
 
         <View style={styles.groupMembersView}>
-          {item.groupMembers.slice(0, 3).map(
-            (member, index) =>
-              member.member?.avatar && (
-                <View
-                  key={member._id}
-                  style={{
-                    ...styles.memberImgView,
-                    right: index * widthInDp(2),
-                  }}>
-                  <ImageWithFallbabck
-                    source={member.member.avatar}
-                    name={member.member.name}
-                    diameter={widthInDp(5)}
-                  />
-                </View>
-              ),
-          )}
+          {item.groupMembers.slice(0, 3).map((member, index) => (
+            <View
+              key={member._id}
+              style={{
+                ...styles.memberImgView,
+                right: index * widthInDp(2),
+              }}>
+              <ImageWithFallbabck
+                source={member.member.avatar}
+                name={member.member.name}
+                diameter={widthInDp(5)}
+              />
+            </View>
+          ))}
           <View style={styles.memberCountView}>
             <Text style={styles.memberCount}>+{item.groupMembers.length}</Text>
           </View>
@@ -51,11 +48,7 @@ const Item = ({item, onPress}: {item: IGroups; onPress: () => void}) => {
   );
 };
 const Separator = () => <View style={styles.separator} />;
-const ListEmptyComponent = () => (
-  <View style={styles.flex}>
-    <Text>No group found</Text>
-  </View>
-);
+
 export const Groups = ({
   groups,
   onPress,
@@ -77,7 +70,7 @@ export const Groups = ({
         keyExtractor={Item => Item._id}
         style={styles.listStyle}
         ItemSeparatorComponent={Separator}
-        ListEmptyComponent={ListEmptyComponent}
+        ListEmptyComponent={<ListEmptyComponent text={'Groups'} />}
       />
     </View>
   );
@@ -136,12 +129,12 @@ const styles = StyleSheet.create({
     borderRadius: widthInDp(5),
     borderColor: COLORS.white,
     borderWidth: widthInDp(1),
-    width: widthInDp(7),
-    height: widthInDp(7),
+    width: widthInDp(6),
+    height: widthInDp(6),
     justifyContent: 'center',
     alignItems: 'center',
+    // backgroundColor: COLORS.white,
   },
-  memberImg: {borderRadius: widthInDp(5), borderWidth: 1},
   memberCountView: {
     borderRadius: widthInDp(5),
     borderWidth: widthInDp(0.3),

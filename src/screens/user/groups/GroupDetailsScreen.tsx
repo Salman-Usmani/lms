@@ -6,18 +6,18 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+import {ImageWithFallbabck} from '../../../components';
 import {useUserContext} from '../../../context/UserContext';
 import {dataServer} from '../../../services/axiosConfig';
 import {COLORS, FONTS, ICONS} from '../../../themes';
-import {GroupStackNavigagtionProps, IGroupPost} from '../../../types';
+import {GroupStackNavigagtionProps} from '../../../types';
 import {heightInDp, widthInDp} from '../../../utils';
-import {CreatePostModal} from './screenComponents/createPostModal';
+import {CreatePost} from './screenComponents/createPost';
 import {GroupPosts} from './screenComponents/groupPosts';
-import {ImageWithFallbabck} from '../../../components';
+import {IGroupPost} from './screenComponents/interface';
 
 const GroupDetailsScreen = ({
   route,
@@ -26,10 +26,9 @@ const GroupDetailsScreen = ({
     route.params;
   const {user} = useUserContext();
   const [isLoading, setLoading] = useState(false);
-  const [isModal, setShowModal] = useState(false);
   const [groupPosts, setGroupPosts] = useState<IGroupPost[]>([]);
 
-  async function fetchUserGroup() {
+  async function fetchGroupPosts() {
     try {
       setLoading(true);
       const fetchGroupPostsApi = await dataServer.get(
@@ -46,7 +45,6 @@ const GroupDetailsScreen = ({
         });
       }
     } catch (error: any) {
-      console.log('error.response.data', error.response.data);
       setLoading(false);
       Toast.show({
         type: 'error',
@@ -54,12 +52,12 @@ const GroupDetailsScreen = ({
           ? error?.response?.data?.errors[0]
           : error?.response?.data.message
             ? error?.response?.data.message
-            : error.response?.data || 'failed to get groups',
+            : error.response?.data || 'failed to get posts',
       });
     }
   }
   useEffect(() => {
-    fetchUserGroup();
+    fetchGroupPosts();
   }, []);
 
   if (isLoading) {
@@ -130,45 +128,9 @@ const GroupDetailsScreen = ({
           color={COLORS.iconColor}
         />
       </View>
-      <View style={styles.addPowtView}>
-        <ImageWithFallbabck
-          source={user?.avatar}
-          name={user?.name || ''}
-          diameter={widthInDp(13)}
-        />
-
-        <TouchableOpacity
-          onPress={() => {
-            setShowModal(true);
-          }}
-          style={[styles.container, styles.rowContainer]}>
-          <Text style={styles.addPostText}>Add new post here</Text>
-          <View style={styles.iconView}>
-            <ICONS.FontAwesome5
-              name="images"
-              size={widthInDp(5)}
-              color={COLORS.primary}
-            />
-            <ICONS.SimpleLineIcons
-              name="paper-clip"
-              size={widthInDp(5)}
-              color={COLORS.primary}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
+      <CreatePost groupPosts={groupPosts} user={user} _id={_id} />
 
       <GroupPosts groupPosts={groupPosts || []} setGroupPosts={setGroupPosts} />
-      <CreatePostModal
-        visible={isModal}
-        onRequestClose={() => {
-          setShowModal(false);
-        }}
-        setGroupPosts={item => groupPosts.unshift(item)}
-        avatar={user?.avatar}
-        name={user?.name}
-        groupId={_id}
-      />
     </ScrollView>
   );
 };
@@ -208,7 +170,6 @@ const styles = StyleSheet.create({
     fontSize: widthInDp(5),
     color: COLORS.primary,
   },
-  iconView: {flexDirection: 'row', gap: widthInDp(2)},
   ownerInfoView: {flexDirection: 'row'},
 
   ownerProfile: {
@@ -227,8 +188,6 @@ const styles = StyleSheet.create({
     fontSize: widthInDp(4),
   },
   ownerMail: {color: COLORS.textHighlight},
-  addPowtView: {flex: 1, flexDirection: 'row', columnGap: widthInDp(2)},
-  addPostText: {fontFamily: FONTS.InterRegular},
   groupName: {
     fontSize: widthInDp(5),
     color: COLORS.textSubHeading,

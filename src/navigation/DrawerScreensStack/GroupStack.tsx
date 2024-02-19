@@ -1,5 +1,4 @@
 import {createStackNavigator} from '@react-navigation/stack';
-import {COLORS} from '../../themes';
 import {GroupDetailsScreen, GroupScreen, MediaScreen} from '../../screens';
 import {GroupStackScreensList} from '../../types';
 

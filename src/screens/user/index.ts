@@ -5,6 +5,7 @@ import GroupScreen from './groups/GroupScreen';
 import GroupDetailsScreen from './groups/GroupDetailsScreen';
 import ChatScreen from './chat/ChatScreen';
 import MessageScreen from './chat/MessageScreen';
+import DashboardScreen from './dashboard/DashboardScreen';
 
 export {
   AccountScreen,
@@ -14,4 +15,5 @@ export {
   GroupDetailsScreen,
   ChatScreen,
   MessageScreen,
+  DashboardScreen,
 };

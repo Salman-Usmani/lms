@@ -10,9 +10,7 @@ const CircleWithAtSign = ({
   diameter: number;
 }) => (
   <View style={styles(diameter).noAvatarView}>
-    <Text style={{...styles().textStyle, fontSize: diameter / 2}}>
-      {name[0]}
-    </Text>
+    <Text style={styles(diameter).textStyle}>{name[0]}</Text>
   </View>
 );
 
@@ -28,7 +26,6 @@ export const ImageWithFallbabck = ({
   ImageStyle?: ImageStyle;
 }) => {
   const [error, setError] = useState(false);
-
   return (
     <View>
       {source ? (
@@ -69,5 +66,6 @@ const styles = (diameter = 0) =>
       fontFamily: FONTS.InterRegular,
       textTransform: 'uppercase',
       color: COLORS.white,
+      fontSize: diameter / 2,
     },
   });

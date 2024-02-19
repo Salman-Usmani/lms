@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {Divider, Menu, PaperProvider} from 'react-native-paper';
-import {COLORS, FONTS, ICONS} from '../../themes';
+import {COLORS, FONTS, ICONS, THEME_COLORS} from '../../themes';
 import {heightInDp, widthInDp} from '../../utils';
 import {ImageWithFallbabck} from '../atoms/ImageWithFallbabck';
 
@@ -26,13 +26,7 @@ export const MenuContainer = ({
         visible={visible}
         contentStyle={styles.contentStyle}
         onDismiss={closeMenu}
-        theme={{
-          colors: {
-            primary: COLORS.primary,
-            text: COLORS.black,
-            secondary: COLORS.secondary,
-          },
-        }}
+        theme={THEME_COLORS}
         style={styles.menuStyle}
         anchor={
           <TouchableOpacity onPress={openMenu} style={styles.icon}>

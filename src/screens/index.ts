@@ -14,5 +14,6 @@ export {
   GroupScreen,
   GroupDetailsScreen,
   ChatScreen,
+  DashboardScreen,
 } from './user';
 export {SplashScreen};

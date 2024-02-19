@@ -1,53 +1,75 @@
 import React from 'react';
+import {Control, Controller} from 'react-hook-form';
 import {KeyboardType, StyleSheet, Text, View} from 'react-native';
 import {TextInput} from 'react-native-paper';
-import {COLORS, FONTS} from '../../themes';
+import {EMAIL_REGEX} from '../../constants';
+import {COLORS, FONTS, THEME_COLORS} from '../../themes';
 import {widthInDp} from '../../utils';
 
 interface IfloatInput {
   title: string;
-  value?: string;
   keyboardType?: KeyboardType;
-  onChange?: (text: string) => void;
   errorMsg?: string;
   isPassword?: boolean;
   otp?: boolean;
+  control: Control<any>;
+  name: string;
+  disabled?: boolean;
+  matchPassword?: string;
 }
 
 export const FloatingTitleTextInputField = ({
   title,
-  value,
   keyboardType,
-  onChange,
   errorMsg,
   isPassword,
   otp,
+  control,
+  name,
+  disabled,
+  matchPassword,
 }: IfloatInput) => {
   return (
     <View>
-      <TextInput
-        label={title}
-        value={value}
-        dense
-        onChangeText={onChange}
-        underlineStyle={Styles.underlineStyle}
-        secureTextEntry={isPassword}
-        keyboardType={keyboardType}
-        maxLength={otp ? 4 : undefined}
-        error={errorMsg ? true : false}
-        disabled={!onChange && true}
-        theme={{
-          colors: {
-            primary: COLORS.primary,
-            error: COLORS.error,
-            secondary: COLORS.secondary,
+      <Controller
+        control={control}
+        rules={{
+          required: `${title} is required`,
+          pattern: {
+            value: name === 'email' ? EMAIL_REGEX : /.*/,
+            message: `${title} is not valid`,
+          },
+          minLength: {
+            value: name === 'password' ? 6 : 0,
+            message: `${title} must be at least 6 characters`,
+          },
+          validate: value => {
+            if (matchPassword && value !== matchPassword) {
+              return 'Passwords do not match';
+            } else return true;
           },
         }}
-        activeOutlineColor={COLORS.primary}
-        style={{
-          ...Styles.textInput,
-          borderColor: errorMsg ? COLORS.error : undefined,
-        }}
+        render={({field: {onChange, value}}) => (
+          <TextInput
+            label={title}
+            value={value}
+            dense
+            onChangeText={onChange}
+            underlineStyle={Styles.underlineStyle}
+            secureTextEntry={isPassword}
+            keyboardType={keyboardType}
+            maxLength={otp ? 4 : undefined}
+            error={errorMsg ? true : false}
+            disabled={disabled}
+            theme={THEME_COLORS}
+            activeOutlineColor={COLORS.primary}
+            style={{
+              ...Styles.textInput,
+              borderColor: errorMsg ? COLORS.error : undefined,
+            }}
+          />
+        )}
+        name={name}
       />
       {errorMsg && <Text style={Styles.errorText}>{errorMsg}</Text>}
     </View>

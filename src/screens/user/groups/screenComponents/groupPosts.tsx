@@ -15,12 +15,12 @@ import VideoPlayer from 'react-native-video-controls';
 import {useUserContext} from '../../../../context/UserContext';
 import {dataServer} from '../../../../services/axiosConfig';
 import {COLORS, FONTS, ICONS} from '../../../../themes';
-import {IGroupPost} from '../../../../types';
-import {heightInDp, widthInDp} from '../../../../utils';
+import {fileDownloader, heightInDp, widthInDp} from '../../../../utils';
 import {PostsComments} from './postsComments';
 import RNFS from 'react-native-fs';
 import ReactNativeBlobUtil from 'react-native-blob-util';
-import {ImageWithFallbabck} from '../../../../components';
+import {ImageWithFallbabck, ListEmptyComponent} from '../../../../components';
+import {IGroupPost} from './interface';
 
 export const GroupPosts = ({
   groupPosts,
@@ -68,7 +68,7 @@ export const GroupPosts = ({
           ? error?.response?.data?.errors[0]
           : error?.response?.data.message
             ? error?.response?.data.message
-            : error.response?.data || 'failed to get groups',
+            : error.response?.data || 'failed to post comment',
       });
     }
   }
@@ -123,70 +123,7 @@ export const GroupPosts = ({
           ? error?.response?.data?.errors[0]
           : error?.response?.data.message
             ? error?.response?.data.message
-            : error.response?.data || 'failed to get groups',
-      });
-    }
-  }
-  function getExtensionFromUrl(url: string) {
-    // Split the URL by dot (.) and get the last part as the extension
-    const parts = url.split('.');
-    if (parts.length > 1) {
-      return parts[parts.length - 1];
-    } else {
-      return ''; // No extension found
-    }
-  }
-  async function downloadFileWithRetry(fileUrl = '', title: string) {
-    if (!fileUrl) {
-      return;
-    }
-    try {
-      setLoading(true);
-
-      const extension = getExtensionFromUrl(fileUrl);
-      const fileName = fileUrl.split('/').pop();
-
-      const localFile = `${RNFS.DownloadDirectoryPath}/${fileName}`;
-      // ReactNativeBlobUtil.fs.dirs.DownloadDir + '/' + fileName;
-
-      // const exists = await ReactNativeBlobUtil.fs.exists(localFile);
-      // if (exists) {
-      //   Toast.show({
-      //     type: 'info',
-      //     text1: 'file already exists',
-      //   });
-      //   return;
-      // }
-
-      await ReactNativeBlobUtil.config({
-        fileCache: false,
-        appendExt: extension,
-        addAndroidDownloads: {
-          useDownloadManager: true,
-          notification: true,
-          title: title,
-          path: localFile,
-        },
-      })
-        .fetch('GET', fileUrl)
-        .progress((received, total) => {
-          Toast.show({
-            type: 'info',
-            text1: `${((Number(received) / Number(total)) * 100).toFixed(
-              2,
-            )}% downloaded`,
-          });
-        })
-        .then(res => {
-          console.log('path', res.path());
-        });
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-      Toast.show({
-        type: 'info',
-        text1: String(error),
+            : error.response?.data || 'failed to delete comment',
       });
     }
   }
@@ -198,7 +135,7 @@ export const GroupPosts = ({
         inputRef={inputRef}
         isLoading={isLoading}
         isLikeLoading={isLikeLoading}
-        onpressDownload={downloadFileWithRetry}
+        onpressDownload={fileDownloader}
         onDeleteComment={commentId =>
           onDeleteComment({postId: item._id, commentId: commentId})
         }
@@ -226,16 +163,11 @@ export const GroupPosts = ({
       keyExtractor={Item => Item._id}
       style={styles.listStyle}
       ItemSeparatorComponent={Separator}
-      ListEmptyComponent={ListEmptyComponent}
+      ListEmptyComponent={<ListEmptyComponent text={'Posts'} />}
     />
   );
 };
 
-const ListEmptyComponent = () => (
-  <View style={styles.flex}>
-    <Text>No Posts found</Text>
-  </View>
-);
 const Item = ({
   item,
   onPress,
@@ -251,7 +183,7 @@ const Item = ({
   onPress: (text: string) => void;
   onPressThumbsUp: () => void;
   onDeleteComment: (commentId: string) => void;
-  onpressDownload: (url: string, title: string) => void;
+  onpressDownload: ({fileUrl, title}: {fileUrl: string; title: string}) => void;
   inputRef: LegacyRef<TextInput>;
   isLoading: boolean;
   isLikeLoading: boolean;
@@ -293,10 +225,10 @@ const Item = ({
         ) : item.media?.mimetype.includes('application') ? (
           <TouchableOpacity
             onPress={() =>
-              onpressDownload(
-                item?.media?.s3PublicUrl || '',
-                item.media?.originalName || '',
-              )
+              onpressDownload({
+                fileUrl: item?.media?.s3PublicUrl || '',
+                title: item.media?.originalName || '',
+              })
             }
             style={styles.postDoc}>
             <ICONS.MaterialCommunityIcons name="download" size={widthInDp(5)} />

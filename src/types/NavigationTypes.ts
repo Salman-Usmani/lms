@@ -16,8 +16,9 @@ export type AuthStackNavigationProp<T extends keyof AuthStackScreensList> =
 
 export type RootStackScreensList = {
   Dashboard: undefined;
+  Community: undefined;
   Account: undefined;
-  Group: undefined;
+  Library: undefined;
   Chat: undefined;
 };
 export type RootStackNavigationProp<T extends keyof RootStackScreensList> =

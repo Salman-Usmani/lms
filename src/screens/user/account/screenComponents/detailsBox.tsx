@@ -13,6 +13,7 @@ interface IDetailsBox {
   phoneNo: string;
   state: string;
   country: string;
+  email: string;
   id: string;
 }
 interface IProps {
@@ -30,36 +31,32 @@ export const DetailsBox = (props: IProps) => {
   const {
     control,
     handleSubmit,
-    setValue,
     formState: {errors},
-  } = useForm<IDetailsBox>();
-  useEffect(() => {
-    try {
-      setValue('name', props.name);
-      setValue('country', props.country);
-      setValue('phoneNo', props.phoneNo);
-      setValue('state', props.state);
-      setValue('id', props.id);
-      //   setValue('email', undefined);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [props]);
+  } = useForm<IDetailsBox>({
+    defaultValues: {
+      name: props.name,
+      country: props.country,
+      phoneNo: props.phoneNo,
+      state: props.state,
+      id: props.id,
+      email: props.email,
+    },
+  });
 
   async function updateUserDetails(data: IDetailsBox) {
     try {
       setLoading(true);
-      const userUpdateApi = await dataServer.put('user', data);
+      const updateUserApi = await dataServer.put('user', data);
       setLoading(false);
-      if (userUpdateApi.status === 200) {
-        props.setUpdatedUser(userUpdateApi.data.data.user);
+      if (updateUserApi.status === 200) {
+        props.setUpdatedUser(updateUserApi.data.data.user);
         await AsyncStorage.setItem(
           'userData',
-          JSON.stringify(userUpdateApi.data.data.user),
+          JSON.stringify(updateUserApi.data.data.user),
         );
         Toast.show({
           type: 'success',
-          text1: userUpdateApi.data.message,
+          text1: updateUserApi.data.message,
         });
       }
     } catch (error: any) {
@@ -76,73 +73,44 @@ export const DetailsBox = (props: IProps) => {
   }
   return (
     <>
-      <Controller
+      <FloatingTitleTextInputField
+        title="Full Name"
+        keyboardType={'default'}
+        errorMsg={errors?.name?.message}
         control={control}
-        rules={{
-          required: 'Full name is required',
-        }}
-        render={({field: {onChange, value}}) => (
-          <FloatingTitleTextInputField
-            title="Full Name"
-            value={value}
-            keyboardType={'default'}
-            onChange={onChange}
-            errorMsg={errors?.name?.message}
-          />
-        )}
         name={'name'}
       />
 
-      <FloatingTitleTextInputField title="Email" value={props.email || ''} />
-
-      <Controller
+      <FloatingTitleTextInputField
+        title="Email"
         control={control}
-        rules={{
-          required: 'phone number is required',
-        }}
-        render={({field: {onChange, value}}) => (
-          <FloatingTitleTextInputField
-            title="Phone Number"
-            value={value}
-            keyboardType={'numeric'}
-            onChange={onChange}
-            errorMsg={errors?.phoneNo?.message}
-          />
-        )}
+        name={'email'}
+        disabled={true}
+      />
+
+      <FloatingTitleTextInputField
+        title="Phone Number"
+        keyboardType={'numeric'}
+        errorMsg={errors?.phoneNo?.message}
+        control={control}
         name={'phoneNo'}
       />
-      <Controller
+
+      <FloatingTitleTextInputField
+        title="State"
+        keyboardType={'default'}
+        errorMsg={errors?.state?.message}
         control={control}
-        rules={{
-          required: 'State is required',
-        }}
-        render={({field: {onChange, value}}) => (
-          <FloatingTitleTextInputField
-            title="State"
-            value={value}
-            keyboardType={'default'}
-            onChange={onChange}
-            errorMsg={errors?.state?.message}
-          />
-        )}
         name={'state'}
       />
-      <Controller
+      <FloatingTitleTextInputField
+        title="Country"
+        keyboardType={'default'}
+        errorMsg={errors?.country?.message}
         control={control}
-        rules={{
-          required: 'Country is required',
-        }}
-        render={({field: {onChange, value}}) => (
-          <FloatingTitleTextInputField
-            title="Country"
-            value={value}
-            keyboardType={'default'}
-            onChange={onChange}
-            errorMsg={errors?.country?.message}
-          />
-        )}
         name={'country'}
       />
+
       <Button
         title={'Save Details'}
         background={true}

@@ -1,90 +1,45 @@
-import {
-  ActivityIndicator,
-  Alert,
-  BackHandler,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {COLORS} from '../../../themes';
-import {CommonActions, useFocusEffect} from '@react-navigation/native';
-import {CohortStackNavigagtionProps} from '../../../types';
-import {dataServer} from '../../../services/axiosConfig';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
+import {dataServer} from '../../../services/axiosConfig';
+import {COLORS} from '../../../themes';
 import {Cohorts} from './screenComponents/cohort';
+import {ICohorts, ICohortsByLevel, ILevel} from './screenComponents/interface';
 
-interface ICohorts {
-  _id: string;
-  name: string;
-  year: string;
-  session: {name: string};
-  modules: [
-    {
-      _id: string;
-      name: string;
-      days: [
-        {
-          _id: string;
-          title: string;
-          videos: [
-            {url: string; title: string; isDownloadable: boolean; _id: string},
-          ];
-          pdfs: [
-            {url: string; title: string; isDownloadable: boolean; _id: string},
-          ];
-          docs: [
-            {url: string; title: string; isDownloadable: boolean; _id: string},
-          ];
-          ppts: [
-            {url: string; title: string; isDownloadable: boolean; _id: string},
-          ];
-        },
-      ];
-    },
-  ];
-}
-
-const CohortScreen = ({navigation}: CohortStackNavigagtionProps<'Cohort'>) => {
+const CohortScreen = () => {
   const [isLoading, setLoading] = useState(true);
-  const [cohorts, setCohorts] = useState<ICohorts[]>([]);
-
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        Alert.alert('Hold on!', 'Are you sure you want to Logout?', [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          {
-            text: 'YES',
-            onPress: () =>
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 1,
-                  routes: [{name: 'SignIn'}],
-                }),
-              ),
-          },
-        ]);
-        return true;
-      };
-
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-      return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, []),
-  );
+  const [cohortByLevels, setCohortByLevels] = useState<ICohortsByLevel[]>([]);
 
   async function fetchUserContent() {
     try {
       setLoading(true);
       const fetchUserContentApi = await dataServer.get('user/content');
       if (fetchUserContentApi.status === 200) {
-        setCohorts(fetchUserContentApi.data.data.cohorts);
+        const moduleByLevel = fetchUserContentApi.data.data.cohorts.map(
+          (cohort: ICohorts) => {
+            const levels: ILevel[] = [];
+            const {modules, ...cohortData} = cohort;
+            modules
+              .sort((a, b) => a.displayOrder - b.displayOrder)
+              .forEach(module => {
+                const level = getModuleLevel(module.displayOrder);
+                const existingLevel = levels.find(l => l.level === level);
+                if (existingLevel) {
+                  existingLevel.modules.push(module);
+                } else
+                  levels.push({
+                    level,
+                    modules: [module],
+                  });
+              });
+            return {
+              ...cohortData,
+              levels,
+            };
+          },
+        );
+        setCohortByLevels([...moduleByLevel]);
+
         setLoading(false);
         Toast.show({
           type: 'success',
@@ -103,6 +58,20 @@ const CohortScreen = ({navigation}: CohortStackNavigagtionProps<'Cohort'>) => {
       });
     }
   }
+  const getModuleLevel = (moduleOrder: number) => {
+    if (moduleOrder >= 1 && moduleOrder < 5) {
+      return 'Level 1';
+    } else if (moduleOrder >= 5 && moduleOrder < 9) {
+      return 'Level 2';
+    } else if (moduleOrder >= 9 && moduleOrder < 13) {
+      return 'Level 3';
+    } else if (moduleOrder >= 13 && moduleOrder < 21) {
+      return 'Level 4';
+    } else {
+      return 'Additional Resource';
+    }
+  };
+
   useEffect(() => {
     fetchUserContent();
   }, []);
@@ -117,7 +86,7 @@ const CohortScreen = ({navigation}: CohortStackNavigagtionProps<'Cohort'>) => {
     );
   }
 
-  return <Cohorts cohorts={cohorts || []} />;
+  return <Cohorts cohorts={cohortByLevels || []} />;
 };
 
 export default CohortScreen;

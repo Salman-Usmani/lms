@@ -21,24 +21,11 @@ import {
   ImageWithFallbabck,
 } from '../../../../components';
 import {dataServer} from '../../../../services/axiosConfig';
-import {COLORS, FONTS, ICONS} from '../../../../themes';
-import {IGroupPost} from '../../../../types';
+import {COLORS, FONTS, ICONS, THEME_COLORS} from '../../../../themes';
 import {heightInDp, pickImage, toastConfig, widthInDp} from '../../../../utils';
-
-type TgroupPost = {
-  content: string;
-  groupId: string;
-  mediaId?: string;
-  title: string;
-};
-interface IPostModal {
-  visible: boolean;
-  onRequestClose: () => void;
-  setGroupPosts: (item: IGroupPost) => void;
-  avatar?: string;
-  name?: string;
-  groupId: string;
-}
+import {PostMedia} from './postMedia';
+import {IPostModal, TgroupPost} from './interface';
+import {IMedia} from '../../../../types';
 
 export const CreatePostModal = ({
   visible,
@@ -48,15 +35,7 @@ export const CreatePostModal = ({
   groupId,
   setGroupPosts,
 }: IPostModal) => {
-  const [postMedia, setPostMedia] = useState<
-    | {
-        uri: string | undefined | null;
-        type: string | undefined | null;
-        name: string | undefined | null;
-      }
-    | null
-    | undefined
-  >(null);
+  const [postMedia, setPostMedia] = useState<IMedia>(null);
   const [isLoading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -64,13 +43,14 @@ export const CreatePostModal = ({
     control,
     handleSubmit,
     setValue,
-    getValues,
+    watch,
     reset,
     formState: {errors},
   } = useForm<TgroupPost>({
     defaultValues: {
       content: '',
       title: '',
+      mediaId: '',
       groupId,
     },
   });
@@ -79,14 +59,14 @@ export const CreatePostModal = ({
     try {
       setLoading(true);
 
-      const uploadMediaApi = await dataServer.post('user/post', data);
-      if (uploadMediaApi.status === 200) {
-        setGroupPosts(uploadMediaApi.data.data.post);
+      const createPostApi = await dataServer.post('user/post', data);
+      if (createPostApi.status === 200) {
+        setGroupPosts(createPostApi.data.data.post);
         setLoading(false);
         onClose();
         Toast.show({
           type: 'success',
-          text1: uploadMediaApi.data.message,
+          text1: createPostApi.data.message,
         });
       }
     } catch (error: any) {
@@ -97,48 +77,11 @@ export const CreatePostModal = ({
           ? error?.response?.data?.errors[0]
           : error?.response?.data.message
             ? error?.response?.data.message
-            : error.response?.data || 'failed to get groups',
+            : error.response?.data || 'failed to create post',
       });
     }
   }
-  async function onMediaDelete() {
-    try {
-      setLoading(true);
-
-      const deleteMediaApi = await dataServer.delete('s3/upload', {
-        data: {fileId: getValues('mediaId')},
-      });
-      if (deleteMediaApi.status === 200) {
-        setValue('mediaId', '');
-        setPostMedia(null);
-        setLoading(false);
-        Toast.show({
-          type: 'success',
-          text1: deleteMediaApi.data.message,
-        });
-      }
-    } catch (error: any) {
-      setLoading(false);
-      Toast.show({
-        type: 'error',
-        text1: Array.isArray(error?.response?.data?.errors)
-          ? error?.response?.data?.errors[0]
-          : error?.response?.data.message
-            ? error?.response?.data.message
-            : error.response?.data || 'failed to get groups',
-      });
-    }
-  }
-  async function onMediaSelect(
-    data:
-      | {
-          uri: string | undefined | null;
-          type: string | undefined | null;
-          name: string | undefined | null;
-        }
-      | null
-      | undefined,
-  ) {
+  async function onMediaSelect(data: IMedia) {
     try {
       setLoading(true);
       let imageData = new FormData();
@@ -163,7 +106,7 @@ export const CreatePostModal = ({
           ? error?.response?.data?.errors[0].message
           : error?.response?.data.message
             ? error?.response?.data.message
-            : error.response?.data || 'failed to get groups',
+            : error.response?.data || 'failed to upload media',
       });
     }
   }
@@ -173,7 +116,7 @@ export const CreatePostModal = ({
     onRequestClose();
   }
   function handlePick(emoji: EmojiType): void {
-    setValue('content', getValues('content') + emoji.emoji);
+    setValue('content', watch('content') + emoji.emoji);
   }
 
   return (
@@ -198,166 +141,123 @@ export const CreatePostModal = ({
             />
             <Text style={styles.userName}>{name}</Text>
           </View>
-          <View>
-            <Text style={styles.addTitle}>
-              Add post title <Text style={styles.titleImportance}>*</Text>
-            </Text>
 
-            <Controller
-              control={control}
-              rules={{
-                required: 'Title is required',
-              }}
-              render={({field: {onChange, value}}) => (
-                <FloatingTitleTextInputField
-                  title="Text"
-                  value={value}
-                  keyboardType={'default'}
-                  onChange={onChange}
-                  errorMsg={errors?.title?.message}
-                />
-              )}
-              name={'title'}
-            />
+          <Text style={styles.addTitle}>
+            Add post title <Text style={styles.titleImportance}>*</Text>
+          </Text>
 
-            <Controller
-              control={control}
-              rules={{
-                required:
-                  getValues('content') || getValues('mediaId')
-                    ? false
-                    : 'Description is required',
-              }}
-              render={({field: {onChange, value}}) => (
-                <>
-                  <View
-                    style={{
-                      ...styles.inputContainer,
-                      borderColor: errors.content?.message
-                        ? COLORS.error
-                        : COLORS.darkGray,
-                    }}>
-                    <TextInput
-                      multiline
-                      label={'Post Description'}
-                      value={value}
-                      onChangeText={onChange}
-                      underlineStyle={styles.underlineStyle}
-                      error={errors.content?.message ? true : false}
-                      theme={{
-                        colors: {
-                          primary: COLORS.primary,
-                          error: COLORS.error,
-                          secondary: COLORS.secondary,
-                        },
-                      }}
-                      style={styles.inputStyle}
-                    />
-                    <View style={styles.iconContainer}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          pickImage('GALLERY').then(data => {
-                            onMediaSelect(data);
-                          });
-                        }}>
-                        <ICONS.FontAwesome5
-                          name="images"
-                          size={widthInDp(5)}
-                          color={COLORS.primary}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => {
-                          pickImage('VIDEO').then(data => {
-                            onMediaSelect(data);
-                          });
-                        }}>
-                        <SvgXml
-                          xml={videoUploadIcon}
-                          height={widthInDp(5)}
-                          width={widthInDp(5)}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => {
-                          DocumentPicker.pick({
-                            // type: types.pdf,
-                          })
-                            .then(result => {
-                              onMediaSelect({
-                                uri: result[0].uri,
-                                type: result[0].type,
-                                name: result[0].name,
-                              });
-                            })
-                            .catch(error => {
-                              console.log('sknfa;sfa;k', error);
+          <FloatingTitleTextInputField
+            title="Title"
+            keyboardType={'default'}
+            errorMsg={errors?.title?.message}
+            name={'title'}
+            control={control}
+          />
+
+          <Controller
+            control={control}
+            rules={{
+              required:
+                watch('content') || watch('mediaId')
+                  ? false
+                  : 'Description is required',
+            }}
+            render={({field: {onChange, value}}) => (
+              <>
+                <View
+                  style={{
+                    ...styles.inputContainer,
+                    borderColor: errors.content?.message
+                      ? COLORS.error
+                      : COLORS.darkGray,
+                  }}>
+                  <TextInput
+                    multiline
+                    label={'Post Description'}
+                    value={value}
+                    onChangeText={onChange}
+                    underlineStyle={styles.underlineStyle}
+                    error={errors.content?.message ? true : false}
+                    theme={THEME_COLORS}
+                    style={styles.inputStyle}
+                  />
+                  <View style={styles.iconContainer}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        pickImage('GALLERY').then(data => {
+                          onMediaSelect(data);
+                        });
+                      }}>
+                      <ICONS.FontAwesome5
+                        name="images"
+                        size={widthInDp(5)}
+                        color={COLORS.primary}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        pickImage('VIDEO').then(data => {
+                          onMediaSelect(data);
+                        });
+                      }}>
+                      <SvgXml
+                        xml={videoUploadIcon}
+                        height={widthInDp(5)}
+                        width={widthInDp(5)}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        DocumentPicker.pick({
+                          // type: types.pdf,
+                        })
+                          .then(result => {
+                            onMediaSelect({
+                              uri: result[0].uri,
+                              type: result[0].type,
+                              name: result[0].name,
                             });
-                        }}>
-                        <ICONS.SimpleLineIcons
-                          name="paper-clip"
-                          size={widthInDp(5)}
-                          color={COLORS.numColor}
-                        />
-                      </TouchableOpacity>
+                          })
+                          .catch(error => {
+                            console.log('sknfa;sfa;k', error);
+                          });
+                      }}>
+                      <ICONS.SimpleLineIcons
+                        name="paper-clip"
+                        size={widthInDp(5)}
+                        color={COLORS.numColor}
+                      />
+                    </TouchableOpacity>
 
-                      <TouchableOpacity onPress={() => setIsOpen(true)}>
-                        <ICONS.FontAwesome5
-                          name="smile"
-                          size={widthInDp(5)}
-                          color={COLORS.numColor}
-                        />
-                      </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity onPress={() => setIsOpen(true)}>
+                      <ICONS.FontAwesome5
+                        name="smile"
+                        size={widthInDp(5)}
+                        color={COLORS.numColor}
+                      />
+                    </TouchableOpacity>
                   </View>
-                  {errors.content?.message && (
-                    <Text style={styles.errorText}>
-                      {errors.content?.message}
-                    </Text>
-                  )}
-                </>
-              )}
-              name={'content'}
-            />
-
-            {postMedia?.type?.includes('image') && postMedia.uri ? (
-              <View style={styles.postTypeImage}>
-                <TouchableOpacity
-                  onPress={onMediaDelete}
-                  style={styles.ImgDelBtn}>
-                  <ICONS.AntDesign
-                    name="closecircle"
-                    size={widthInDp(5)}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity>
-                <Image source={{uri: postMedia.uri}} style={styles.postImage} />
-              </View>
-            ) : postMedia?.type?.includes('application') ? (
-              <View style={styles.postTypeDoc}>
-                <ICONS.SimpleLineIcons
-                  name="paper-clip"
-                  size={widthInDp(5)}
-                  color={COLORS.numColor}
-                />
-                <Text style={styles.postDoc}>{postMedia.name}</Text>
-              </View>
-            ) : (
-              postMedia?.type?.includes('video') &&
-              postMedia.uri && (
-                <View style={styles.postTypeVideo}>
-                  <VideoPlayer
-                    tapAnywhereToPause
-                    disableBack
-                    source={{
-                      uri: postMedia?.uri,
-                    }}
-                    toggleResizeModeOnFullscreen={true}
-                  />
                 </View>
-              )
+                {errors.content?.message && (
+                  <Text style={styles.errorText}>
+                    {errors.content?.message}
+                  </Text>
+                )}
+              </>
             )}
-          </View>
+            name={'content'}
+          />
+          {postMedia && (
+            <PostMedia
+              mediaId={watch('mediaId') || ''}
+              onMediaDelete={() => {
+                setValue('mediaId', '');
+                setPostMedia(null);
+              }}
+              postMedia={postMedia}
+            />
+          )}
+
           <Button
             title={'Post'}
             background={true}
@@ -379,7 +279,7 @@ export const CreatePostModal = ({
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     flex: 1,
     justifyContent: 'center',
   },
@@ -433,6 +333,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     height: heightInDp(15),
+    backgroundColor: COLORS.disable,
     borderWidth: 0.5,
     borderRadius: widthInDp(2),
     marginTop: heightInDp(2),
@@ -442,7 +343,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     textAlignVertical: 'top',
-    backgroundColor: COLORS.white,
+    backgroundColor: 'transparent',
     padding: 0,
     fontFamily: FONTS.InterRegular,
     borderRadius: widthInDp(2),
@@ -470,7 +371,7 @@ const styles = StyleSheet.create({
     marginTop: heightInDp(2),
   },
   postTypeVideo: {
-    height: heightInDp(30),
+    height: heightInDp(20),
     marginTop: heightInDp(2),
     width: 'auto',
     borderRadius: widthInDp(3),

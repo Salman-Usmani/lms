@@ -1,3 +1,5 @@
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -5,18 +7,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {heightInDp, widthInDp} from '../../utils';
-import {AuthStackNavigationProp} from '../../types';
-import {Controller, useForm} from 'react-hook-form';
-import {COLORS, FONTS} from '../../themes';
-import {dataServer} from '../../services/axiosConfig';
 import Toast from 'react-native-toast-message';
 import {
   Button,
-  LogoDesign,
   FloatingTitleTextInputField,
+  LogoDesign,
 } from '../../components';
+import {dataServer} from '../../services/axiosConfig';
+import {COLORS, FONTS} from '../../themes';
+import {AuthStackNavigationProp} from '../../types';
+import {heightInDp, widthInDp} from '../../utils';
 
 type TforgotPasswordForm = {
   email: string;
@@ -30,12 +30,15 @@ const VerifyOtpScreen = ({
   const {
     control,
     handleSubmit,
-    setValue,
     formState: {errors},
-  } = useForm<TforgotPasswordForm>();
+  } = useForm<TforgotPasswordForm>({
+    defaultValues: {
+      email: route.params.email,
+    },
+  });
   const [isLoading, setLoading] = useState(false);
 
-  async function handleForgotPassword(data: TforgotPasswordForm) {
+  async function handleOtpVerification(data: TforgotPasswordForm) {
     try {
       setLoading(true);
       const verifyOtpApi = await dataServer.post('user/verify-otp', data);
@@ -60,14 +63,6 @@ const VerifyOtpScreen = ({
     }
   }
 
-  useEffect(() => {
-    try {
-      setValue('email', route.params.email);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [route.params]);
-
   return (
     <KeyboardAvoidingView
       style={styles.mainContainer}
@@ -76,27 +71,18 @@ const VerifyOtpScreen = ({
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Verify OTP Code</Text>
         <View style={styles.inputContainer}>
-          <Controller
+          <FloatingTitleTextInputField
+            title="Enter OTP Code"
+            keyboardType={'numeric'}
+            errorMsg={errors?.otp?.message}
+            otp={true}
             control={control}
-            rules={{
-              required: 'OTP is required',
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Enter OTP Code"
-                value={value}
-                keyboardType={'numeric'}
-                onChange={onChange}
-                errorMsg={errors?.otp?.message}
-                otp={true}
-              />
-            )}
             name={'otp'}
           />
         </View>
         <Button
           title={'Continue'}
-          handlePress={handleSubmit(handleForgotPassword)}
+          handlePress={handleSubmit(handleOtpVerification)}
           background={true}
           loading={isLoading}
         />

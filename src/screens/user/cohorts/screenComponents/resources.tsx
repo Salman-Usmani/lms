@@ -1,142 +1,109 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import React, {useState} from 'react';
 import {COLORS, FONTS, ICONS} from '../../../../themes';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {Files} from './files';
-
-interface IVideos {
-  url: string;
-  title: string;
-  isDownloadable: boolean;
-  _id: string;
-}
-interface IPdfs {
-  url: string;
-  title: string;
-  isDownloadable: boolean;
-  _id: string;
-}
-interface IPpts {
-  url: string;
-  title: string;
-  isDownloadable: boolean;
-  _id: string;
-}
+import {FileType, IFile} from './interface';
 
 export const Resources = ({
   videos,
   pdfs,
   ppts,
 }: {
-  videos: IVideos[];
-  pdfs: IPdfs[];
-  ppts: IPpts[];
+  videos: IFile[];
+  pdfs: IFile[];
+  ppts: IFile[];
 }) => {
-  const [selectedFile, setSelectedFile] = useState<
-    'pdf' | 'ppt' | 'video' | ''
-  >('');
+  const [selectedFile, setSelectedFile] = useState<FileType | ''>('');
   return (
     <View style={styles.resourceContainer}>
-      <View style={styles.resourceBbuttonContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            if (selectedFile === 'pdf') {
-              setSelectedFile('');
-              return;
-            }
-            setSelectedFile('pdf');
-          }}
-          style={[styles.resourceButtonStyle]}>
-          <Text style={styles.title}>PDFs</Text>
-          {selectedFile === 'pdf' ? (
-            <ICONS.MaterialIcons
-              name="keyboard-arrow-up"
-              color={COLORS.black}
-              size={25}
-            />
-          ) : (
-            <ICONS.MaterialIcons
-              name="keyboard-arrow-down"
-              color={COLORS.black}
-              size={25}
-            />
-          )}
-        </TouchableOpacity>
-        {selectedFile === 'pdf' && <Files files={pdfs} fileType={'pdf'} />}
-      </View>
-
-      <View
-        style={[
-          styles.resourceBbuttonContainer,
-          {
+      {!!pdfs.length && (
+        <Item
+          toSelect={'pdf'}
+          selectedFile={selectedFile}
+          setSelectedFile={fileType => setSelectedFile(fileType)}
+          files={pdfs}
+          title="PDFs"
+        />
+      )}
+      {!!ppts.length && (
+        <Item
+          toSelect={'ppt'}
+          title="PPTs"
+          selectedFile={selectedFile}
+          setSelectedFile={fileType => setSelectedFile(fileType)}
+          files={ppts}
+          containerStyle={{
             backgroundColor: COLORS.pptBackground,
             borderColor: COLORS.pptBackground,
-          },
-        ]}>
-        <TouchableOpacity
-          onPress={() => {
-            if (selectedFile === 'ppt') {
-              setSelectedFile('');
-              return;
-            }
-            setSelectedFile('ppt');
           }}
-          style={styles.resourceButtonStyle}>
-          <Text style={styles.title}>PPTs</Text>
-          {selectedFile === 'ppt' ? (
-            <ICONS.MaterialIcons
-              name="keyboard-arrow-up"
-              color={COLORS.black}
-              size={25}
-            />
-          ) : (
-            <ICONS.MaterialIcons
-              name="keyboard-arrow-down"
-              color={COLORS.black}
-              size={25}
-            />
-          )}
-        </TouchableOpacity>
-        {selectedFile === 'ppt' && <Files files={ppts} fileType={'ppt'} />}
-      </View>
-
-      <View
-        style={[
-          styles.resourceBbuttonContainer,
-          {
+        />
+      )}
+      {!!videos.length && (
+        <Item
+          toSelect={'video'}
+          title="Videos"
+          selectedFile={selectedFile}
+          setSelectedFile={fileType => setSelectedFile(fileType)}
+          files={videos}
+          containerStyle={{
             backgroundColor: COLORS.secondary,
             borderColor: COLORS.secondary,
-          },
-        ]}>
-        <TouchableOpacity
-          onPress={() => {
-            if (selectedFile === 'video') {
-              setSelectedFile('');
-              return;
-            }
-            setSelectedFile('video');
           }}
-          style={styles.resourceButtonStyle}>
-          <Text style={styles.title}>Videos</Text>
-          {selectedFile === 'video' ? (
-            <ICONS.MaterialIcons
-              name="keyboard-arrow-up"
-              color={COLORS.black}
-              size={25}
-            />
-          ) : (
-            <ICONS.MaterialIcons
-              name="keyboard-arrow-down"
-              color={COLORS.black}
-              size={25}
-            />
-          )}
-        </TouchableOpacity>
-        {selectedFile === 'video' && (
-          <Files files={videos} fileType={'video'} />
+        />
+      )}
+    </View>
+  );
+};
+
+const Item = ({
+  toSelect,
+  files,
+  selectedFile,
+  setSelectedFile,
+  containerStyle,
+}: {
+  title: string;
+  toSelect: FileType;
+  files: IFile[];
+  selectedFile: FileType | '';
+  setSelectedFile: (FileType: FileType | '') => void;
+  containerStyle?: ViewStyle;
+}) => {
+  return (
+    <View style={[styles.resourceBbuttonContainer, containerStyle]}>
+      <TouchableOpacity
+        onPress={() => {
+          if (selectedFile === toSelect) {
+            setSelectedFile('');
+            return;
+          }
+          setSelectedFile(toSelect);
+        }}
+        style={[styles.resourceButtonStyle]}>
+        <Text style={styles.title}>{toSelect}</Text>
+        {selectedFile === toSelect ? (
+          <ICONS.MaterialIcons
+            name="keyboard-arrow-up"
+            color={COLORS.black}
+            size={25}
+          />
+        ) : (
+          <ICONS.MaterialIcons
+            name="keyboard-arrow-down"
+            color={COLORS.black}
+            size={25}
+          />
         )}
-      </View>
+      </TouchableOpacity>
+      {selectedFile === toSelect && <Files files={files} fileType={toSelect} />}
     </View>
   );
 };

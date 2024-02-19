@@ -5,9 +5,8 @@ export type {
   ITextInput,
   UserData,
   IGroups,
-  IGroupPost,
   IGroupMember,
-  IComments,
+  IMedia,
 } from './Interface';
 export type {
   AuthStackNavigationProp,

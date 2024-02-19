@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Controller, useForm} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,7 +16,6 @@ import {
   FloatingTitleTextInputField,
   LogoDesign,
 } from '../../components';
-import {EMAIL_REGEX} from '../../constants';
 import {useUserContext} from '../../context/UserContext';
 import {dataServer} from '../../services/axiosConfig';
 import {COLORS, FONTS, ICONS} from '../../themes';
@@ -37,8 +36,8 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
     formState: {errors},
   } = useForm<TLoginForm>({
     defaultValues: {
-      email: __DEV__ ? 'info.user.users@gmail.com' : '',
-      // email: __DEV__ ? 'iamosmanraza@gmail.com' : '',
+      // email: __DEV__ ? 'info.user.users@gmail.com' : '',
+      email: __DEV__ ? 'iamosmanraza@gmail.com' : '',
       password: __DEV__ ? 'Usman@12345' : '',
     },
   });
@@ -47,7 +46,6 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
     try {
       setLoading(true);
       const loginApi = await dataServer.post('auth/login', data);
-      setLoading(false);
       if (loginApi.status === 200) {
         await AsyncStorage.setItem(
           'accessToken',
@@ -71,6 +69,7 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
           }),
         );
       }
+      setLoading(false);
     } catch (error: any) {
       setLoading(false);
       Toast.show({
@@ -98,39 +97,20 @@ const SignInScreen = ({navigation}: AuthStackNavigationProp<'SignIn'>) => {
         </Text>
 
         <View style={styles.inputContainer}>
-          <Controller
-            control={control}
-            rules={{
-              required: 'Email is required',
-              pattern: {value: EMAIL_REGEX, message: 'Email is not valid'},
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Email"
-                value={value}
-                keyboardType={'email-address'}
-                onChange={onChange}
-                errorMsg={errors?.email?.message}
-              />
-            )}
+          <FloatingTitleTextInputField
+            title="Email"
+            keyboardType={'email-address'}
+            errorMsg={errors?.email?.message}
             name={'email'}
+            control={control}
           />
 
-          <Controller
+          <FloatingTitleTextInputField
+            title="Password"
             control={control}
-            rules={{
-              required: 'password is required',
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Password"
-                value={value}
-                keyboardType={'default'}
-                isPassword={true}
-                onChange={onChange}
-                errorMsg={errors?.password?.message}
-              />
-            )}
+            keyboardType={'default'}
+            isPassword={true}
+            errorMsg={errors?.password?.message}
             name={'password'}
           />
         </View>
@@ -161,25 +141,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: widthInDp(5),
     backgroundColor: COLORS.white,
   },
-
-  title: {
-    fontSize: heightInDp(5),
-    fontFamily: FONTS.InterSemiBold,
-  },
-  noAccountStyle: {
-    color: COLORS.darkGray,
-    fontFamily: FONTS.InterRegular,
-  },
-  register: {
-    color: COLORS.primary,
-  },
+  register: {color: COLORS.primary},
+  forgetPassView: {marginBottom: heightInDp(1.5)},
+  title: {fontSize: heightInDp(5), fontFamily: FONTS.InterSemiBold},
+  noAccountStyle: {color: COLORS.darkGray, fontFamily: FONTS.InterRegular},
   inputContainer: {
     width: '100%',
     alignSelf: 'center',
     marginVertical: heightInDp(2.5),
     rowGap: heightInDp(1.5),
   },
-  forgetPassView: {marginBottom: heightInDp(1.5)},
   forgetPass: {
     color: COLORS.primary,
     fontSize: widthInDp(4.5),

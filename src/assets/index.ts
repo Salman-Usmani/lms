@@ -1,6 +1,7 @@
+import {dashboard} from './svg/dashboard';
 import {logo} from './svg/logo';
-import {signal} from './svg/signal';
+import {capOverBook} from './svg/capOverBook';
 import {userIcon} from './svg/user';
 import {videoUploadIcon} from './svg/videoUpload';
 
-export {logo, signal, userIcon, videoUploadIcon};
+export {logo, capOverBook, userIcon, videoUploadIcon, dashboard};

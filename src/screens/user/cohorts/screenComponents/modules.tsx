@@ -1,43 +1,30 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS, FONTS, ICONS} from '../../../../themes';
-import {widthInDp} from '../../../../utils';
+import {heightInDp, widthInDp} from '../../../../utils';
 import {Days} from './days';
-
-interface IModules {
-  _id: string;
-  name: string;
-  days: [
-    {
-      _id: string;
-      title: string;
-      videos: [
-        {url: string; title: string; isDownloadable: boolean; _id: string},
-      ];
-      pdfs: [
-        {url: string; title: string; isDownloadable: boolean; _id: string},
-      ];
-      docs: [
-        {url: string; title: string; isDownloadable: boolean; _id: string},
-      ];
-      ppts: [
-        {url: string; title: string; isDownloadable: boolean; _id: string},
-      ];
-    },
-  ];
-}
+import {IModule} from './interface';
 
 const Item = ({
   item,
   onPress,
   selectedItem,
+  containerStyle,
 }: {
-  item: IModules;
+  item: IModule;
   onPress: () => void;
   selectedItem: string;
+  containerStyle?: ViewStyle;
 }) => {
   return (
-    <View style={styles.moduleContainer}>
+    <View style={[styles.moduleContainer, containerStyle]}>
       <TouchableOpacity onPress={onPress} style={styles.moduleButtonStyle}>
         <View style={styles.titleView}>
           <ICONS.MaterialIcons
@@ -69,13 +56,20 @@ const Item = ({
     </View>
   );
 };
-export const Modules = ({modules}: {modules: IModules[]}) => {
+export const Modules = ({
+  modules,
+  containerStyle,
+}: {
+  modules: IModule[];
+  containerStyle?: ViewStyle;
+}) => {
   const [selectedModule, setSelectedModule] = useState('');
-  const renderItem = ({item}: {item: IModules}) => {
+  const renderItem = ({item}: {item: IModule}) => {
     return (
       <Item
         item={item}
         selectedItem={selectedModule}
+        containerStyle={containerStyle}
         onPress={() => {
           if (selectedModule === item._id) {
             setSelectedModule('');
@@ -92,15 +86,23 @@ export const Modules = ({modules}: {modules: IModules[]}) => {
       data={modules}
       renderItem={renderItem}
       keyExtractor={Item => Item._id}
+      style={styles.listStyle}
     />
   );
 };
 
 const styles = StyleSheet.create({
+  listStyle: {
+    rowGap: heightInDp(0.3),
+    marginVertical: heightInDp(2),
+  },
   moduleContainer: {
     flex: 1,
     backgroundColor: COLORS.lightBlue,
     padding: widthInDp(1),
+    marginHorizontal: widthInDp(2),
+    borderRadius: widthInDp(2),
+    borderWidth: widthInDp(1),
   },
   moduleButtonStyle: {
     flex: 1,
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
   },
   titleView: {
     flexDirection: 'row',
-    gap: widthInDp(5),
+    gap: widthInDp(3),
     flex: 1,
   },
   title: {color: COLORS.black, flex: 1, fontFamily: FONTS.InterRegular},
@@ -119,5 +121,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
     paddingHorizontal: widthInDp(2),
+    borderRadius: widthInDp(2),
   },
 });

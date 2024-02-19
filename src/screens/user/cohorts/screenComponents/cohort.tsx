@@ -1,47 +1,17 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-
 import React, {useState} from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ListEmptyComponent} from '../../../../components';
 import {COLORS, FONTS, ICONS} from '../../../../themes';
 import {heightInDp, widthInDp} from '../../../../utils';
-import {Modules} from './modules';
-
-interface ICohorts {
-  _id: string;
-  name: string;
-  year: string;
-  session: {name: string};
-  modules: [
-    {
-      _id: string;
-      name: string;
-      days: [
-        {
-          _id: string;
-          title: string;
-          videos: [
-            {url: string; title: string; isDownloadable: boolean; _id: string},
-          ];
-          pdfs: [
-            {url: string; title: string; isDownloadable: boolean; _id: string},
-          ];
-          docs: [
-            {url: string; title: string; isDownloadable: boolean; _id: string},
-          ];
-          ppts: [
-            {url: string; title: string; isDownloadable: boolean; _id: string},
-          ];
-        },
-      ];
-    },
-  ];
-}
+import {ICohortsByLevel} from './interface';
+import {Levels} from './levels';
 
 const Item = ({
   item,
   onPress,
   selectedItem,
 }: {
-  item: ICohorts;
+  item: ICohortsByLevel;
   onPress: () => void;
   selectedItem: string;
 }) => {
@@ -72,15 +42,15 @@ const Item = ({
           />
         )}
       </TouchableOpacity>
-      {selectedItem === item._id && <Modules modules={item.modules || []} />}
+      {selectedItem === item._id && <Levels Levels={item.levels || []} />}
     </View>
   );
 };
 
-export const Cohorts = ({cohorts}: {cohorts: ICohorts[] | []}) => {
+export const Cohorts = ({cohorts}: {cohorts: ICohortsByLevel[] | []}) => {
   const [selectedCohort, setSelectedCohort] = useState('');
 
-  const renderItem = ({item}: {item: ICohorts}) => {
+  const renderItem = ({item}: {item: ICohortsByLevel}) => {
     return (
       <Item
         item={item}
@@ -101,11 +71,14 @@ export const Cohorts = ({cohorts}: {cohorts: ICohorts[] | []}) => {
       data={cohorts}
       renderItem={renderItem}
       keyExtractor={Item => Item._id}
+      ListEmptyComponent={<ListEmptyComponent text={'Cohorts'} />}
+      style={styles.mainContainer}
     />
   );
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {flex: 1, backgroundColor: COLORS.white},
   cohortsContainer: {
     flex: 1,
     borderRadius: widthInDp(2),

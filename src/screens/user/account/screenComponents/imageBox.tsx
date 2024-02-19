@@ -1,12 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {widthInDp} from '../../../../utils';
-import {dataServer} from '../../../../services/axiosConfig';
+import {Image, StyleSheet, Text} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {Button, ImagePicker} from '../../../../components';
-import {UserData} from '../../../../types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {dataServer} from '../../../../services/axiosConfig';
 import {FONTS} from '../../../../themes';
+import {IMedia, UserData} from '../../../../types';
+import {widthInDp} from '../../../../utils';
 
 interface IImageBox {
   name?: string;
@@ -18,11 +18,7 @@ export const ImageBox = ({name, avatar, setUpdatedUser}: IImageBox) => {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  async function updateAvatar(data: {
-    uri: string | undefined;
-    type: string | undefined;
-    name: string | undefined;
-  }) {
+  async function updateAvatar(data: IMedia) {
     try {
       setLoading(true);
       let imageData = new FormData();
@@ -43,7 +39,6 @@ export const ImageBox = ({name, avatar, setUpdatedUser}: IImageBox) => {
       }
     } catch (error: any) {
       setLoading(false);
-      console.log('error.response.data', error.response.data);
       Toast.show({
         type: 'error',
         text1: Array.isArray(error?.response?.data?.errors)

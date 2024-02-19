@@ -15,7 +15,7 @@ const GroupScreen = ({
   const [isLoading, setLoading] = useState(true);
   const [groups, setGroups] = useState<IGroups[]>([]);
 
-  async function fetchUserGroup() {
+  async function fetchUserGroups() {
     try {
       setLoading(true);
       const fetchUserGroupsApi = await dataServer.get('user/groups');
@@ -40,7 +40,7 @@ const GroupScreen = ({
     }
   }
   useEffect(() => {
-    fetchUserGroup();
+    fetchUserGroups();
   }, []);
 
   if (isLoading) {

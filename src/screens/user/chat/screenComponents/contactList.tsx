@@ -11,7 +11,7 @@ import {dataServer} from '../../../../services/axiosConfig';
 import Toast from 'react-native-toast-message';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {COLORS, FONTS} from '../../../../themes';
-import {ImageWithFallbabck} from '../../../../components';
+import {ImageWithFallbabck, ListEmptyComponent} from '../../../../components';
 import {
   ChatStackNavigagtionProps,
   ChatStackScreensList,
@@ -49,7 +49,7 @@ export const ContactList = ({search}: {search: string}) => {
           ? error?.response?.data?.errors[0]
           : error?.response?.data.message
             ? error?.response?.data.message
-            : error.response?.data || 'failed to get cohorts',
+            : error.response?.data || 'failed to get contacts',
       });
     }
   }
@@ -74,7 +74,7 @@ export const ContactList = ({search}: {search: string}) => {
           ? error?.response?.data?.errors[0]
           : error?.response?.data.message
             ? error?.response?.data.message
-            : error.response?.data || 'failed to get cohorts',
+            : error.response?.data || 'failed to initiate chat',
       });
     }
   }
@@ -131,9 +131,7 @@ export const ContactList = ({search}: {search: string}) => {
           )}
         </>
       ) : (
-        <View style={styles.flex}>
-          <Text>No Contacts found</Text>
-        </View>
+        <ListEmptyComponent text={'Contacts'} />
       )}
     </View>
   );

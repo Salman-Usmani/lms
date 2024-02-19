@@ -1,7 +1,7 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import moment from 'moment';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -10,21 +10,18 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import {ImageWithFallbabck} from '../../../../components';
+import {ImageWithFallbabck, ListEmptyComponent} from '../../../../components';
 import {useUserContext} from '../../../../context/UserContext';
 import {dataServer} from '../../../../services/axiosConfig';
 import {COLORS, FONTS} from '../../../../themes';
 import {ChatStackScreensList} from '../../../../types';
 import {heightInDp, widthInDp} from '../../../../utils';
-import {useFocusEffect} from '@react-navigation/native';
 
 type IChats = {
   _id: string;
   isGroupChat: boolean;
-
   createdAt: Date;
   updatedAt: Date;
-
   lastMessage: {
     _id: string;
     sender: {
@@ -73,7 +70,7 @@ export const ChatList = ({search}: {search: string}) => {
           ? error?.response?.data?.errors[0]
           : error?.response?.data.message
             ? error?.response?.data.message
-            : error.response?.data || 'failed to get cohorts',
+            : error.response?.data || 'failed to get chats',
       });
     }
   }
@@ -148,9 +145,7 @@ export const ChatList = ({search}: {search: string}) => {
             ),
         )
       ) : (
-        <View style={styles.flex}>
-          <Text>No Chats found</Text>
-        </View>
+        <ListEmptyComponent text={'Chats'} />
       )}
     </View>
   );

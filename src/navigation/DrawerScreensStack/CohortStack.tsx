@@ -1,7 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
-import {CohortStackScreensList} from '../../types';
-import {COLORS} from '../../themes';
 import {CohortScreen, MediaScreen} from '../../screens';
+import {CohortStackScreensList} from '../../types';
 
 export const CohortStack = () => {
   const Stack = createStackNavigator<CohortStackScreensList>();

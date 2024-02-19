@@ -30,20 +30,17 @@ export interface ITextInput {
     string | import('react').JSXElementConstructor<any>
   >;
 }
-
 export interface ICountryCode {
   name: string;
   dial_code: string;
   code: string;
   flag?: string;
 }
-
 export interface ICountrySelect {
   showModal: boolean;
   setShowModal: Function;
   setSelectedCountry: Function;
 }
-
 export interface UserData {
   _id: string;
   avatar: string;
@@ -58,68 +55,6 @@ export interface UserData {
   phoneNo: string;
   role: string;
   state: string;
-}
-export interface IComments {
-  _id: string;
-  content: string;
-  post: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-    phoneNo: string;
-    role: string;
-    avatar?: string;
-  } | null;
-
-  createdAt: string;
-  updatedAt: string;
-}
-export interface ILikes {
-  _id: string;
-  name: string;
-  email: string;
-  phoneNo: string;
-  role: string;
-  country: string;
-  state: string;
-  avatar: string;
-}
-
-export interface IGroupPost {
-  url: string;
-  _id: string;
-  title: string;
-  content: string;
-  group: string;
-  postCreator: {
-    _id: string;
-    name: string;
-    email: string;
-    phoneNo: string;
-    role: string;
-    country: string;
-    state: string;
-    avatar?: string;
-  };
-  isGroupAdminApproved: boolean;
-  comments: IComments[];
-  likes: [ILikes];
-  media: {
-    _id: string;
-    fileKey: string;
-    encoding: string;
-    originalName?: string;
-    mimetype: string;
-    s3PrivateUrl: string;
-    s3PublicUrl: string;
-    size: string;
-    bucketName: string;
-    createdAt: string;
-    updatedAt: string;
-  } | null;
-  createdAt: Date;
-  updatedAt: string;
 }
 export interface IGroupMember {
   member: {
@@ -137,7 +72,6 @@ export interface IGroupMember {
   createdAt: string;
   _id: string;
 }
-
 export interface IGroups {
   moderatorSettings: {
     moderator: {
@@ -170,3 +104,11 @@ export interface IGroups {
   createdAt: Date;
   updatedAt: string;
 }
+export type IMedia =
+  | {
+      uri: string | undefined | null;
+      type: string | undefined | null;
+      name: string | undefined | null;
+    }
+  | undefined
+  | null;

@@ -1,8 +1,7 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {ChatScreen} from '../../screens';
-import {COLORS} from '../../themes';
-import {ChatStackScreensList} from '../../types';
 import {MessageScreen} from '../../screens/user';
+import {ChatStackScreensList} from '../../types';
 
 export const ChatStack = () => {
   const Stack = createStackNavigator<ChatStackScreensList>();

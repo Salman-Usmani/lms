@@ -2,10 +2,10 @@ import moment from 'moment';
 import React, {useState} from 'react';
 import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
 import {COLORS, ICONS} from '../../../../themes';
-import {IComments} from '../../../../types';
 import {heightInDp, widthInDp} from '../../../../utils';
 import {CommentDeletePrompt} from './deleteComment';
 import {ImageWithFallbabck} from '../../../../components';
+import {IComments} from './interface';
 
 export const PostsComments = ({
   postsComments,
@@ -40,7 +40,7 @@ export const PostsComments = ({
         ItemSeparatorComponent={Separator}
       />
       <CommentDeletePrompt
-        showModal={isDeleteModal ? true : false}
+        showModal={!!isDeleteModal}
         setShowModal={() => {
           setDeleteModal('');
         }}

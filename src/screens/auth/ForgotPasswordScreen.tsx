@@ -77,21 +77,11 @@ const ForgotPasswordScreen = ({
             </Text>
           </Text>
           <View style={styles.inputContainer}>
-            <Controller
+            <FloatingTitleTextInputField
+              title="Email"
+              keyboardType={'email-address'}
+              errorMsg={errors?.email?.message}
               control={control}
-              rules={{
-                required: 'Email is required',
-                pattern: {value: EMAIL_REGEX, message: 'Email is not valid'},
-              }}
-              render={({field: {onChange, value}}) => (
-                <FloatingTitleTextInputField
-                  title="Email"
-                  value={value}
-                  keyboardType={'email-address'}
-                  onChange={onChange}
-                  errorMsg={errors?.email?.message}
-                />
-              )}
               name={'email'}
             />
           </View>

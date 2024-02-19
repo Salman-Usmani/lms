@@ -2,14 +2,13 @@ import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import {
   ForgotPasswordScreen,
+  ResetPasswordScreen,
   SignInScreen,
   SignUpScreen,
-  VerifyOtpScreen,
-  ResetPasswordScreen,
   SplashScreen,
+  VerifyOtpScreen,
 } from '../screens';
 import {AuthStackScreensList} from '../types';
-import {COLORS} from '../themes';
 import RootStack from './RootStack';
 // import {roboto} from '../../assets/fonts';
 

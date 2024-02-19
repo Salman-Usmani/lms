@@ -1,24 +1,24 @@
-import React, {useEffect, useState} from 'react';
+import {CommonActions} from '@react-navigation/native';
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
 import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
   Text,
   View,
-  StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import {
   Button,
-  LogoDesign,
   FloatingTitleTextInputField,
+  LogoDesign,
 } from '../../components';
-import {AuthStackNavigationProp} from '../../types';
-import Toast from 'react-native-toast-message';
 import {dataServer} from '../../services/axiosConfig';
 import {COLORS, FONTS} from '../../themes';
+import {AuthStackNavigationProp} from '../../types';
 import {heightInDp, widthInDp} from '../../utils';
-import {useForm, Controller} from 'react-hook-form';
-import {CommonActions} from '@react-navigation/native';
 
 type TRegisterForm = {
   email: string;
@@ -34,9 +34,12 @@ const ResetPasswordScreen = ({
     control,
     handleSubmit,
     watch,
-    setValue,
     formState: {errors},
-  } = useForm<TRegisterForm>();
+  } = useForm<TRegisterForm>({
+    defaultValues: {
+      email: route.params.email,
+    },
+  });
 
   const [isLoading, setLoading] = useState(false);
 
@@ -70,13 +73,7 @@ const ResetPasswordScreen = ({
       });
     }
   }
-  useEffect(() => {
-    try {
-      setValue('email', route.params.email);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [route.params]);
+
   return (
     <KeyboardAvoidingView
       style={styles.mainContainer}
@@ -87,51 +84,24 @@ const ResetPasswordScreen = ({
         <LogoDesign />
         <View style={styles.inputContainer}>
           <Text style={styles.title}>Verify OTP Code</Text>
-          <Controller
-            control={control}
-            rules={{
-              required: 'password is required',
-              minLength: {
-                value: 8,
-                message: 'Password must be at least 8 characters',
-              },
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Password"
-                value={value}
-                keyboardType={'default'}
-                isPassword={true}
-                onChange={onChange}
-                errorMsg={errors?.password?.message}
-              />
-            )}
+
+          <FloatingTitleTextInputField
+            title="Password"
+            keyboardType={'default'}
+            isPassword={true}
+            errorMsg={errors?.password?.message}
             name={'password'}
+            control={control}
           />
 
-          <Controller
-            control={control}
-            rules={{
-              required: 'confirm password is required',
-              minLength: {
-                value: 8,
-                message: 'Password must be at least 8 characters',
-              },
-              validate: value =>
-                value === watch('password') || 'Passwords do not match',
-              // validate:
-            }}
-            render={({field: {onChange, value}}) => (
-              <FloatingTitleTextInputField
-                title="Confirm Password"
-                value={value}
-                keyboardType={'default'}
-                onChange={onChange}
-                isPassword={true}
-                errorMsg={errors?.confirmPassword?.message}
-              />
-            )}
+          <FloatingTitleTextInputField
+            title="Confirm Password"
+            keyboardType={'default'}
+            isPassword={true}
+            errorMsg={errors?.confirmPassword?.message}
+            matchPassword={watch('password')}
             name={'confirmPassword'}
+            control={control}
           />
         </View>
 

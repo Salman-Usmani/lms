@@ -9,19 +9,12 @@ import {
 } from 'react-native-image-picker';
 import {COLORS, FONTS, ICONS} from '../../themes';
 import {heightInDp, widthInDp} from '../../utils';
+import {IMedia} from '../../types';
 
 type IImagePicker = {
   showModal: boolean;
   setShowModal: (show: boolean) => void;
-  handleUpdateAvatar: ({
-    uri,
-    type,
-    name,
-  }: {
-    uri: string | undefined;
-    type: string | undefined;
-    name: string | undefined;
-  }) => void;
+  handleUpdateAvatar: (data: IMedia) => void;
 };
 
 export const ImagePicker = (props: IImagePicker) => {
